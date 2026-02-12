@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Monitor Exams</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../css/admin-dashboard.css">
+</head>
+
+<body>
+
+    <div class="dashboard-container">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>Exam Portal</h2>
+                <p>Admin Panel</p>
+            </div>
+
+            <nav class="sidebar-menu">
+                <a href="dashboard.html">Dashboard</a>
+                <a href="manage-users.html">Manage Users</a>
+                <a href="monitor-exams.html" class="active">Monitor Exams</a>
+                <a href="results-overview.html">Results Overview</a>
+                <a href="profile.html">Profile</a>
+                <a href="../login.html">Logout</a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <a href="#" class="sidebar-setting">Dark Mode 🌙</a>
+                <a href="#" class="sidebar-setting">Help ❓</a>
+                <a href="#" class="sidebar-setting">Settings ⚙️</a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+
+            <header class="topbar">
+                <h1>Monitor Exams</h1>
+                <div class="profile-box">
+                    <span>AD</span>
+                </div>
+            </header>
+
+            <!-- Tabs -->
+            <section class="recent-section">
+
+                <div class="tabs">
+                    <button class="tab active">Active Exams</button>
+                    <button class="tab">Completed Exams</button>
+                    <button class="tab">Violations</button>
+                </div>
+
+                <!-- Live Monitoring Table -->
+                <div class="table-container">
+                    <table class="submission-table">
+                        <thead>
+                            <tr>
+                                <th>Student</th>
+                                <th>Exam</th>
+                                <th>OS</th>
+                                <th>Browser</th>
+                                <th>IP Address</th>
+                                <th>Tab Switch</th>
+                                <th>Keys Flag</th>
+                                <th>Fullscreen</th>
+                                <th>Risk</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            <tr>
+                                <td>--</td>
+                                <td>--</td>
+                                <td>Windows 11</td>
+                                <td>Chrome</td>
+                                <td>192.168.1.12</td>
+                                <td><span class="status warning">2 Times</span></td>
+                                <td><span class="status inactive">Detected</span></td>
+                                <td><span class="status active">Yes</span></td>
+                                <td><span class="risk high">High</span></td>
+                                <td>
+                                    <a href="view-monitoring.html" class="action-btn">View</a>
+
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>--</td>
+                                <td>Programming</td>
+                                <td>macOS</td>
+                                <td>Safari</td>
+                                <td>192.168.1.25</td>
+                                <td><span class="status active">0</span></td>
+                                <td><span class="status active">No</span></td>
+                                <td><span class="status active">Yes</span></td>
+                                <td><span class="risk low">Low</span></td>
+                                <td>
+                                    <a href="view-monitoring.html" class="action-btn">View</a>
+
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+</body>
+
+</html>

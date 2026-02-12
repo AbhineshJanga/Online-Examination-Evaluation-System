@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="../../css/admin-dashboard.css">
+
+</head>
+
+<body>
+
+    <div class="dashboard-container">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>Exam Portal</h2>
+                <p>Admin Panel</p>
+            </div>
+
+            <nav class="sidebar-menu">
+                <a href="dashboard.html" class="active">Dashboard</a>
+                <a href="manage-users.html">Manage Users</a>
+                <a href="monitor-exams.html">Monitor Exams</a>
+                <a href="results-overview.html">Results Overview</a>
+                <a href="profile.html">Profile</a>
+                <a href="../login.html">Logout</a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <a href="#" class="sidebar-setting">Dark Mode 🌙</a>
+                <a href="#" class="sidebar-setting">Help ❓</a>
+                <a href="#" class="sidebar-setting">Settings ⚙️</a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+
+            <!-- Topbar -->
+            <header class="topbar">
+                <h1>Admin Dashboard</h1>
+                <div class="profile-box">
+                    <span>AD</span>
+                </div>
+            </header>
+
+            <!-- Stats Section -->
+            <section class="stats-section">
+
+                <div class="stat-card">
+                    <h3>Total Students</h3>
+                    <p>120</p>
+                </div>
+
+                <div class="stat-card">
+                    <h3>Total Faculty</h3>
+                    <p>15</p>
+                </div>
+
+                <div class="stat-card">
+                    <h3>Total Exams</h3>
+                    <p>25</p>
+                </div>
+
+                <div class="stat-card">
+                    <h3>Active Exams</h3>
+                    <p>5</p>
+                </div>
+
+            </section>
+
+            <!-- Recent Activity -->
+            <section class="recent-section">
+
+                <div class="section-header">
+                    <h2>Recent Activity</h2>
+                </div>
+
+                <div class="table-container">
+                    <table class="submission-table">
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Action</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr>
+                                <td>Prof. -</td>
+                                <td>Created Mathematics Exam</td>
+                                <td>15 Feb 2026</td>
+                            </tr>
+
+                            <tr>
+                                <td>-</td>
+                                <td>Submitted Programming Exam</td>
+                                <td>16 Feb 2026</td>
+                            </tr>
+
+                            <tr>
+                                <td>Admin</td>
+                                <td>Added New Faculty</td>
+                                <td>17 Feb 2026</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+</body>
+
+</html>

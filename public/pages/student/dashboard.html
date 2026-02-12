@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+
+    <!-- Correct CSS Path -->
+    <link rel="stylesheet" href="../../css/student-dashboard.css">
+</head>
+
+<body>
+
+    <!-- Main Grid Container -->
+    <div class="dashboard-container">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>Exam Portal</h2>
+                <p>Student Panel</p>
+            </div>
+
+            <nav class="sidebar-menu">
+                <a href="dashboard.html" class="active">Dashboard</a>
+                <a href="viewExams.html">View Exams</a>
+                <a href="my-results.html">My Results</a>
+                <a href="profile.html">Profile</a>
+                <a href="../login.html">Logout</a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <a href="#" class="sidebar-setting">Dark Mode 🌙</a>
+                <a href="#" class="sidebar-setting">Help ❓</a>
+                <a href="#" class="sidebar-setting">Settings ⚙️</a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+
+            <!-- Top Bar -->
+            <header class="topbar">
+                <h1>Welcome</h1>
+                <div class="profile-box">
+                    <span>User</span>
+                </div>
+            </header>
+
+            <!-- Stats Section -->
+            <section class="stats-section">
+                <div class="stat-card">
+                    <h3>Available Exams</h3>
+                    <p>0</p>
+                </div>
+
+                <div class="stat-card">
+                    <h3>Results Published</h3>
+                    <p>0</p>
+                </div>
+            </section>
+
+            <!-- Exam Section -->
+            <section class="exam-section">
+                <h2>Upcoming Exams</h2>
+                <div class="exam-list">
+                    <p>No exams available.</p>
+                </div>
+            </section>
+
+            <section class="performance-section">
+                <h2>Performance Overview</h2>
+
+                <div class="performance-grid">
+                    <div class="performance-card">
+                        <h3>Average Score</h3>
+                        <p class="score">--%</p>
+
+                        <div class="progress-bar">
+                            <span class="progress-fill"></span>
+                        </div>
+                    </div>
+
+
+                    <div class="performance-card">
+                        <h3>Exams Passed</h3>
+                        <p class="score success">-</p>
+                    </div>
+
+                    <div class="performance-card">
+                        <h3>Exams Failed</h3>
+                        <p class="score danger">-</p>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+    </div>
+
+</body>
+
+</html>

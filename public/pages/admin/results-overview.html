@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Results Overview</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../css/admin-dashboard.css">
+</head>
+
+<body>
+
+    <div class="dashboard-container">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>Exam Portal</h2>
+                <p>Admin Panel</p>
+            </div>
+
+            <nav class="sidebar-menu">
+                <a href="dashboard.html">Dashboard</a>
+                <a href="manage-users.html">Manage Users</a>
+                <a href="monitor-exams.html">Monitor Exams</a>
+                <a href="results-overview.html" class="active">Results Overview</a>
+                <a href="profile.html">Profile</a>
+                <a href="../login.html">Logout</a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <a href="#" class="sidebar-setting">Dark Mode 🌙</a>
+                <a href="#" class="sidebar-setting">Help ❓</a>
+                <a href="#" class="sidebar-setting">Settings ⚙️</a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+
+            <header class="topbar">
+                <h1>Results Overview</h1>
+                <div class="profile-box">
+                    <span>AD</span>
+                </div>
+            </header>
+
+            <!-- Summary Cards -->
+            <section class="stats-section">
+
+                <div class="stat-card">
+                    <h3>Total Students Appeared</h3>
+                    <p>120</p>
+                </div>
+
+                <div class="stat-card">
+                    <h3>Total Passed</h3>
+                    <p>95</p>
+                </div>
+
+                <div class="stat-card">
+                    <h3>Total Failed</h3>
+                    <p>20</p>
+                </div>
+
+                <div class="stat-card">
+                    <h3>Pass Percentage</h3>
+                    <p>79%</p>
+                </div>
+
+            </section>
+
+            <!-- Exam-wise Performance -->
+            <section class="recent-section">
+
+                <div class="section-header">
+                    <h2>Exam-wise Performance</h2>
+                </div>
+
+                <div class="table-container">
+                    <table class="submission-table">
+                        <thead>
+                            <tr>
+                                <th>Exam</th>
+                                <th>Total Appeared</th>
+                                <th>Passed</th>
+                                <th>Failed</th>
+                                <th>Pass %</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            <tr>
+                                <td>Mathematics</td>
+                                <td>60</td>
+                                <td>50</td>
+                                <td>10</td>
+                                <td><span class="risk low">83%</span></td>
+                            </tr>
+
+                            <tr>
+                                <td>Programming</td>
+                                <td>60</td>
+                                <td>45</td>
+                                <td>15</td>
+                                <td><span class="risk warning">75%</span></td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+</body>
+
+</html>

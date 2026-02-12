@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Exam</title>
+
+    <!-- Correct CSS Path -->
+    <link rel="stylesheet" href="../../css/teacher-dashboard.css">
+</head>
+
+
+<body>
+
+
+    <!-- Main Grid Container -->
+    <div class="dashboard-container">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>Exam Portal</h2>
+                <p>Faculty Panel</p>
+            </div>
+
+            <nav class="sidebar-menu">
+                <a href="dashboard.html">Dashboard</a>
+                <a href="create-exam.html">Create Exam</a>
+                <a href="manage-exams.html"  class="active">Manage Exams</a>
+                <a href="submissions.html">Submissions</a>
+                <a href="results.html">Results</a>
+                <a href="profile.html">Profile</a>
+                <a href="../login.html">Logout</a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <a href="#" class="sidebar-setting">Dark Mode 🌙</a>
+                <a href="#" class="sidebar-setting">Help ❓</a>
+                <a href="#" class="sidebar-setting">Settings ⚙️</a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+
+            <!-- Top Bar -->
+            <header class="topbar">
+                <h1>Welcome</h1>
+                <div class="profile-box">
+                    <span>User</span>
+                </div>
+            </header>
+
+            <section class="form-section">
+
+                <section class="recent-section">
+
+                    <div class="section-header">
+                        <h2>Manage Exams</h2>
+                        <a href="create-exam.html">+ Create New</a>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="submission-table">
+                            <thead>
+                                <tr>
+                                    <th>Subject</th>
+                                    <th>Course ID</th>
+                                    <th>Format</th>
+                                    <th>Date</th>
+                                    <th>Duration</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <tr>
+                                    <td>Mathematics</td>
+                                    <td>MATH101</td>
+                                    <td>MCQ</td>
+                                    <td>15 Feb 2026</td>
+                                    <td>60 mins</td>
+                                    <td><span class="status pending">Draft</span></td>
+                                    <td>
+                                        <a href="edit-exam.html" class="action-btn">Edit</a>
+                                        <a href="#" class="action-btn">Delete</a>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>Programming</td>
+                                    <td>CS201</td>
+                                    <td>Code</td>
+                                    <td>18 Feb 2026</td>
+                                    <td>90 mins</td>
+                                    <td><span class="status graded">Published</span></td>
+                                    <td>
+                                        <a href="edit-exam.html" class="action-btn">Edit</a>
+                                        <a href="#" class="action-btn">Delete</a>
+                                    </td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+
+                </section>
+
+
+
+        </main>
+
+    </div>
+
+</body>
+
+</html>

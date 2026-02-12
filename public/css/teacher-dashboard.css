@@ -1,0 +1,737 @@
+/* =========================
+   Global Reset
+========================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #f4f6f9;
+    color: #333;
+}
+
+/* =========================
+   Main Dashboard Grid
+========================= */
+.dashboard-container {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    min-height: 100vh;
+}
+
+/* =========================
+   Sidebar
+========================= */
+.sidebar {
+    background: linear-gradient(135deg, #6a11cb, #2575fc);
+    color: #fff;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    margin: 3px;
+    border-radius: 17px;
+
+    position: sticky;
+    top: 10px;
+    height: calc(100vh - 20px);
+}
+
+.sidebar-header {
+    margin-bottom: 30px;
+}
+
+.sidebar-header h2 {
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.sidebar-header p {
+    font-size: 14px;
+    opacity: 0.8;
+}
+
+/* Sidebar Menu */
+.sidebar-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.sidebar-menu a {
+    text-decoration: none;
+    color: #fff;
+    padding: 12px 15px;
+    border-radius: 8px;
+    font-size: 15px;
+    transition: background 0.3s ease, transform 0.2s ease;
+    cursor: pointer;
+}
+
+.sidebar-menu a:hover,
+.sidebar-menu a.active {
+    background: rgba(255, 255, 255, 0.18);
+    transform: translateX(4px);
+}
+
+/* Sidebar Footer */
+.sidebar-footer {
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.sidebar-setting {
+    text-decoration: none;
+    color: #fff;
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.sidebar-setting:hover {
+    background: rgba(255, 255, 255, 0.18);
+    transform: translateX(4px);
+}
+
+/* =========================
+   Main Content
+========================= */
+.main-content {
+    padding: 15px 25px 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    margin: 3px;
+    border-radius: 17px;
+    background-color: aliceblue;
+}
+
+/* =========================
+   Topbar
+========================= */
+.topbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: linear-gradient(135deg, #6a11cb, #2575fc);
+    color: white;
+    padding: 18px 22px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 0 0 12px 12px;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
+}
+
+.topbar h1 {
+    font-size: 22px;
+    font-weight: 600;
+}
+
+.profile-box {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #e3e7ee;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #333;
+    cursor: pointer;
+}
+
+/* =========================
+   Stats Section
+========================= */
+.stats-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+.stat-card {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 14px;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.06);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    transition: transform 0.3s ease;
+    cursor: pointer;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+}
+
+.stat-card h3 {
+    font-size: 16px;
+    font-weight: 500;
+    color: #666;
+}
+
+.stat-card p {
+    font-size: 28px;
+    font-weight: 700;
+    color: #1e3c72;
+}
+
+/* =========================
+   Recent Sections
+========================= */
+.recent-section {
+    background-color: #fff;
+    padding: 22px;
+    border-radius: 14px;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.06);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.section-header h2 {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.section-header a {
+    text-decoration: none;
+    font-size: 14px;
+    color: #2575fc;
+}
+
+.section-header a:hover {
+    text-decoration: underline;
+}
+
+/* =========================
+   Submission Table
+========================= */
+.table-container {
+    overflow-x: auto;
+}
+
+.submission-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.submission-table thead {
+    background: linear-gradient(135deg, #6a11cb, #2575fc);
+    color: white;
+}
+
+.submission-table th,
+.submission-table td {
+    padding: 12px 15px;
+    text-align: left;
+    font-size: 14px;
+}
+
+.submission-table th {
+    font-weight: 600;
+}
+
+.submission-table tbody tr {
+    border-bottom: 1px solid #eee;
+    transition: background 0.2s ease;
+}
+
+.submission-table tbody tr:hover {
+    background-color: #f5f7ff;
+}
+
+/* Status badges */
+.status {
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.status.pending {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status.graded {
+    background: #e6f4ea;
+    color: #2e7d32;
+}
+
+/* Action button */
+.action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 90px;
+    padding: 6px 0;
+    border-radius: 6px;
+    background: linear-gradient(135deg, #6a11cb, #2575fc);
+    color: white;
+    font-size: 13px;
+    text-decoration: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.action-btn:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+}
+
+/* =========================
+   Create Exam Form
+========================= */
+
+.form-section {
+    background: #fff;
+    padding: 25px;
+    border-radius: 14px;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.06);
+}
+
+.exam-form {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.form-group.full-width {
+    grid-column: 1 / -1;
+}
+
+.form-group label {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    outline: none;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    border-color: #2575fc;
+}
+
+/* Question Section */
+.question-section {
+    background: #f8f9fd;
+    padding: 20px;
+    border-radius: 12px;
+}
+
+.add-question-btn {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 6px;
+    background: linear-gradient(135deg, #6a11cb, #2575fc);
+    color: white;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.add-question-btn:hover {
+    opacity: 0.9;
+}
+
+.question-placeholder {
+    margin-top: 15px;
+    color: #777;
+}
+
+/* Form Actions */
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.primary-btn {
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    background: linear-gradient(135deg, #6a11cb, #2575fc);
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.primary-btn:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+}
+
+/* =========================
+   Dynamic Question Cards
+========================= */
+
+.question-card {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 12px;
+    margin-top: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.question-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.question-header h4 {
+    font-size: 16px;
+}
+
+.remove-btn {
+    background: #fdecea;
+    color: #c62828;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.remove-btn:hover {
+    opacity: 0.8;
+}
+
+.options-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px;
+}
+
+.options-grid input {
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+.submission-table td:last-child {
+    display: flex;
+    gap: 8px;
+}
+
+
+
+/* =========================
+   Edit Exam Improvements
+========================= */
+
+/* Make question cards slightly spaced */
+#questionsContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Improve remove button hover */
+.remove-btn {
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.remove-btn:hover {
+    background: #f8d7da;
+    transform: scale(1.05);
+}
+
+/* Improve textarea inside question */
+.question-card textarea {
+    resize: vertical;
+}
+
+/* Improve select spacing */
+.question-card select {
+    width: 120px;
+}
+
+/* Better spacing for options */
+.options-grid input {
+    width: 100%;
+}
+
+/* Small responsive fix for question cards */
+@media (max-width: 600px) {
+    .question-card {
+        padding: 15px;
+    }
+
+    .question-header h4 {
+        font-size: 14px;
+    }
+
+    .remove-btn {
+        font-size: 11px;
+        padding: 5px 8px;
+    }
+}
+.submission-table td:last-child {
+    display: flex;
+    gap: 8px;
+}
+
+
+/* =========================
+   Evaluation Page Enhancements
+========================= */
+
+.evaluation-info {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 14px;
+}
+
+.question-card p {
+    font-size: 14px;
+    margin-bottom: 6px;
+}
+
+.question-card textarea {
+    resize: vertical;
+}
+
+.status.fail {
+    background: #fdecea;
+    color: #c62828;
+}
+
+
+.status.present {
+    background: #e6f4ea;
+    color: #2e7d32;
+}
+
+.status.absent {
+    background: #fdecea;
+    color: #c62828;
+}
+
+
+/* =========================
+   Faculty Profile Page
+========================= */
+
+.profile-section {
+    display: flex;
+    justify-content: center;
+    padding-top: 20px;
+}
+
+.profile-card {
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+    width: 100%;
+    max-width: 650px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+}
+
+.profile-avatar {
+    width: 100px;
+    height: 100px;
+    background: linear-gradient(135deg, #6a11cb, #2575fc);
+    color: white;
+    font-size: 32px;
+    font-weight: 600;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    letter-spacing: 1px;
+}
+
+.profile-details {
+    width: 100%;
+    line-height: 1.8;
+    font-size: 14px;
+}
+
+.profile-details p {
+    border-bottom: 1px solid #f0f0f0;
+    padding-bottom: 6px;
+}
+
+.profile-details strong {
+    color: #555;
+}
+
+.profile-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.nav-btn {
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    background: #e0e0e0;
+    transition: all 0.2s ease;
+}
+
+.nav-btn.primary {
+    background: linear-gradient(135deg, #6a11cb, #2575fc);
+    color: white;
+}
+
+.nav-btn:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+}
+
+/* Responsive Profile */
+@media (max-width: 600px) {
+
+    .profile-card {
+        padding: 20px;
+    }
+
+    .profile-avatar {
+        width: 80px;
+        height: 80px;
+        font-size: 24px;
+    }
+
+    .profile-details {
+        font-size: 13px;
+    }
+
+    .profile-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .profile-actions button {
+        width: 100%;
+    }
+}
+
+
+
+
+
+/* =========================
+   Responsive Design
+========================= */
+@media (max-width: 900px) {
+
+    .dashboard-container {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 1fr;
+    }
+
+    .sidebar {
+        position: relative;
+        top: unset;
+        height: auto;
+        margin: 0;
+        border-radius: 0;
+        flex-direction: column;
+        align-items: center;
+        padding: 15px;
+    }
+
+    .sidebar-header {
+        margin-bottom: 10px;
+        text-align: center;
+    }
+
+    .sidebar-header p {
+        display: none;
+    }
+
+    .sidebar-menu {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+        width: 100%;
+    }
+
+    .sidebar-menu a {
+        padding: 8px 12px;
+        font-size: 13px;
+        transform: none;
+    }
+
+    .sidebar-footer {
+        display: none;
+    }
+
+    .main-content {
+        margin: 0;
+        border-radius: 0;
+        padding: 15px;
+    }
+}
+
+@media (max-width: 600px) {
+
+    .submission-table th,
+    .submission-table td {
+        font-size: 12px;
+        padding: 8px;
+    }
+
+    .submission-table th:last-child,
+    .submission-table td:last-child {
+        text-align: center;
+    }
+
+    .action-btn {
+        width: 75px;
+        font-size: 12px;
+    }
+
+    .stat-card p {
+        font-size: 22px;
+    }
+}

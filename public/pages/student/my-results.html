@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Results</title>
+
+    <!-- Correct CSS Path -->
+    <link rel="stylesheet" href="../../css/student-dashboard.css">
+</head>
+
+<body>
+
+    <!-- Main Grid Container -->
+    <div class="dashboard-container">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>Exam Portal</h2>
+                <p>Student Panel</p>
+            </div>
+
+            <nav class="sidebar-menu">
+                <a href="dashboard.html">Dashboard</a>
+                <a href="viewExams.html">View Exams</a>
+                <a href="my-results.html" class="active">My Results</a>
+                <a href="profile.html">Profile</a>
+                <a href="../login.html">Logout</a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <a href="#" class="sidebar-setting">Dark Mode 🌙</a>
+                <a href="#" class="sidebar-setting">Help ❓</a>
+                <a href="#" class="sidebar-setting">Settings ⚙️</a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+
+            <!-- Top Bar -->
+            <header class="topbar">
+                <h1>Welcome</h1>
+                <div class="profile-box">
+                    <span>User</span>
+                </div>
+            </header>
+
+            <section class="view-results">
+
+                <h2>My Results</h2>
+
+                <div class="result-grid">
+
+                    <div class="result-card">
+                        <h3>Object-Oriented Programming</h3>
+                        <p class="result-date">Exam Date: 20 March 2026</p>
+                        <p class="result-score">Score: 85%</p>
+                        <p class="result-status pass">Status: Passed</p>
+
+                        <a href="result-details.html" class="start-btn">Result Details</a>
+
+                    </div>
+
+                    <div class="result-card">
+                        <h3>Data Structures</h3>
+                        <p class="result-date">Exam Date: 15 March 2026</p>
+                        <p class="result-score">Score: --</p>
+                        <p class="result-status pending">Status: Not Published</p>
+
+                        <a href="result-details.html" class="start-btn">Result Details</a>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+        </main>
+
+    </div>
+
+</body>
+
+</html>

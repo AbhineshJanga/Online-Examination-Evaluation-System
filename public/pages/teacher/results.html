@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Results</title>
+    <link rel="stylesheet" href="../../css/teacher-dashboard.css">
+</head>
+
+<body>
+
+    <div class="dashboard-container">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>Exam Portal</h2>
+                <p>Faculty Panel</p>
+            </div>
+
+            <nav class="sidebar-menu">
+                <a href="dashboard.html">Dashboard</a>
+                <a href="create-exam.html">Create Exam</a>
+                <a href="manage-exams.html">Manage Exams</a>
+                <a href="submissions.html">Submissions</a>
+                <a href="results.html" class="active">Results</a>
+                <a href="profile.html">Profile</a>
+                <a href="../login.html">Logout</a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <a href="#" class="sidebar-setting">Dark Mode 🌙</a>
+                <a href="#" class="sidebar-setting">Help ❓</a>
+                <a href="#" class="sidebar-setting">Settings ⚙️</a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+
+            <header class="topbar">
+                <h1>Exam Results</h1>
+                <div class="profile-box">
+                    <span>User</span>
+                </div>
+            </header>
+
+            <section class="recent-section">
+
+                <div class="section-header">
+                    <h2>Evaluated Results</h2>
+                </div>
+
+                <div class="table-container">
+                    <table class="submission-table">
+                        <thead>
+                            <tr>
+                                <th>Student Name</th>
+                                <th>Exam</th>
+                                <th>Total Marks (Out of X)</th>
+                                <th>Attendance</th>
+                                <th>Result</th>
+                            </tr>
+                        </thead>
+
+
+                        <tbody>
+
+                            <tr>
+                                <td>--</td>
+                                <td>--</td>
+                                <td>--</td>
+                                <td><span class="status graded">Present</span></td>
+                                <td><span class="status graded">Pass</span></td>
+                            </tr>
+
+                            <tr>
+                                <td>--</td>
+                                <td>--</td>
+                                <td>--</td>
+                                <td><span class="status graded">Present</span></td>
+                                <td><span class="status fail">Fail</span></td>
+                            </tr>
+
+                            <tr>
+                                <td>--</td>
+                                <td>--</td>
+                                <td>-</td>
+                                <td><span class="status fail">Absent</span></td>
+                                <td><span class="status pending">Not Attempted</span></td>
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+</body>
+
+</html>

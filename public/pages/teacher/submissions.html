@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Exam</title>
+
+    <!-- Correct CSS Path -->
+    <link rel="stylesheet" href="../../css/teacher-dashboard.css">
+</head>
+
+
+<body>
+
+
+    <!-- Main Grid Container -->
+    <div class="dashboard-container">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>Exam Portal</h2>
+                <p>Faculty Panel</p>
+            </div>
+
+            <nav class="sidebar-menu">
+                <a href="dashboard.html">Dashboard</a>
+                <a href="create-exam.html">Create Exam</a>
+                <a href="manage-exams.html">Manage Exams</a>
+                <a href="submissions.html" class="active">Submissions</a>
+                <a href="results.html">Results</a>
+                <a href="profile.html">Profile</a>
+                <a href="../login.html">Logout</a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <a href="#" class="sidebar-setting">Dark Mode 🌙</a>
+                <a href="#" class="sidebar-setting">Help ❓</a>
+                <a href="#" class="sidebar-setting">Settings ⚙️</a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+
+            <!-- Top Bar -->
+            <header class="topbar">
+                <h1>Welcome</h1>
+                <div class="profile-box">
+                    <span>User</span>
+                </div>
+            </header>
+
+            <section class="recent-section">
+                <div class="section-header">
+                    <h2>Submissions</h2>
+                </div>
+                <div class="table-container">
+                    <table class="submission-table">
+                        <thead>
+                            <tr>
+                                <th>Student Name</th>
+                                <th>Exam</th>
+                                <th>Date</th>
+                                <th>Marks</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td><span class="status pending">Pending</span></td>
+                                <td>
+                                    <a href="evaluate-submission.html" class="action-btn">Evaluate</a>
+                                </td>
+
+                            </tr>
+
+                            <tr>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td><span class="status graded">Graded</span></td>
+                                <td>
+                                    <a href="evaluate-submission.html" class="action-btn">View</a>
+                                </td>
+
+                            </tr>
+
+                            <tr>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td><span class="status pending">Pending</span></td>
+                                <td>
+                                    <a href="#" class="action-btn">Evaluate</a>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+
+    </div>
+
+</body>
+
+</html>
