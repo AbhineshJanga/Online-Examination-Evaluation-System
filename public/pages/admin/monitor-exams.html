@@ -29,7 +29,7 @@
             </nav>
 
             <div class="sidebar-footer">
-                <a href="#" class="sidebar-setting">Dark Mode 🌙</a>
+                <a href="#" class="sidebar-setting dark-toggle">Dark Mode 🌙</a>
                 <a href="#" class="sidebar-setting">Help ❓</a>
                 <a href="#" class="sidebar-setting">Settings ⚙️</a>
             </div>
@@ -49,9 +49,9 @@
             <section class="recent-section">
 
                 <div class="tabs">
-                    <button class="tab active">Active Exams</button>
-                    <button class="tab">Completed Exams</button>
-                    <button class="tab">Violations</button>
+                    <button class="tab active" data-tab="active">Active Exams</button>
+                    <button class="tab" data-tab="completed">Completed Exams</button>
+                    <button class="tab" data-tab="violations">Violations</button>
                 </div>
 
                 <!-- Live Monitoring Table -->
@@ -72,41 +72,7 @@
                             </tr>
                         </thead>
 
-                        <tbody>
-
-                            <tr>
-                                <td>--</td>
-                                <td>--</td>
-                                <td>Windows 11</td>
-                                <td>Chrome</td>
-                                <td>192.168.1.12</td>
-                                <td><span class="status warning">2 Times</span></td>
-                                <td><span class="status inactive">Detected</span></td>
-                                <td><span class="status active">Yes</span></td>
-                                <td><span class="risk high">High</span></td>
-                                <td>
-                                    <a href="view-monitoring.html" class="action-btn">View</a>
-
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td>--</td>
-                                <td>Programming</td>
-                                <td>macOS</td>
-                                <td>Safari</td>
-                                <td>192.168.1.25</td>
-                                <td><span class="status active">0</span></td>
-                                <td><span class="status active">No</span></td>
-                                <td><span class="status active">Yes</span></td>
-                                <td><span class="risk low">Low</span></td>
-                                <td>
-                                    <a href="view-monitoring.html" class="action-btn">View</a>
-
-                                </td>
-                            </tr>
-
-                        </tbody>
+                        <tbody id="monitorTableBody"></tbody>
                     </table>
                 </div>
 
@@ -115,6 +81,8 @@
         </main>
 
     </div>
+    <script src="../../js/common.js"></script>
+    <script type="module" src="../../js/admin/monitor-exams.js"></script>
 
 </body>
 

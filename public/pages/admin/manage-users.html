@@ -29,7 +29,7 @@
             </nav>
 
             <div class="sidebar-footer">
-                <a href="#" class="sidebar-setting">Dark Mode 🌙</a>
+                <a href="#" class="sidebar-setting dark-toggle">Dark Mode 🌙</a>
                 <a href="#" class="sidebar-setting">Help ❓</a>
                 <a href="#" class="sidebar-setting">Settings ⚙️</a>
             </div>
@@ -51,20 +51,20 @@
                 <div class="controls">
 
                     <div class="search-bar">
-                        <input type="text" placeholder="Search by name or email">
+                        <input type="text" id="searchInput" placeholder="Search by name or email">
                     </div>
 
                     <div class="filter-bar">
-                        <select>
-                            <option>All Roles</option>
-                            <option>Students</option>
-                            <option>Faculty</option>
+                        <select id="roleFilter">
+                            <option value="all">All Roles</option>
+                            <option value="student">Students</option>
+                            <option value="faculty">Faculty</option>
                         </select>
 
-                        <select>
-                            <option>All Status</option>
-                            <option>Active</option>
-                            <option>Disabled</option>
+                        <select id="statusFilter">
+                            <option value="all">All Status</option>
+                            <option value="active">Active</option>
+                            <option value="disabled">Disabled</option>
                         </select>
                     </div>
 
@@ -84,34 +84,7 @@
                             </tr>
                         </thead>
 
-                        <tbody>
-
-                            <tr>
-                                <td>--</td>
-                                <td>aaa@example.com</td>
-                                <td>Student</td>
-                                <td><span class="status active">Active</span></td>
-                                <td>17 Feb 2026</td>
-                                <td class="action-cell">
-                                    <button class="action-btn">Activity</button>
-                                    <button class="action-btn warning">Disable</button>
-                                    <button class="action-btn danger">Remove</button>
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td>--</td>
-                                <td>abc@example.com</td>
-                                <td>Faculty</td>
-                                <td><span class="status inactive">Disabled</span></td>
-                                <td>10 Feb 2026</td>
-                                <td class="action-cell">
-                                    <button class="action-btn">Activity</button>
-                                    <button class="action-btn">Enable</button>
-                                    <button class="action-btn danger">Remove</button>
-                                </td>
-                            </tr>
-
+                        <tbody id="usersTableBody">
                         </tbody>
                     </table>
                 </div>
@@ -121,7 +94,8 @@
         </main>
 
     </div>
-
+    <script src="../../js/common.js"></script>
+    <script type="module" src="../../js/admin/manage-users.js"></script>
 </body>
 
 </html>

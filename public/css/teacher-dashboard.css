@@ -11,6 +11,154 @@
 body {
     background-color: #f4f6f9;
     color: #333;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* =========================
+   Dark Mode Theme
+========================= */
+body.dark {
+    background-color: #1a1a1a;
+    color: #e0e0e0;
+}
+
+body.dark .dashboard-container {
+    background-color: #1a1a1a;
+}
+
+body.dark .main-content {
+    background-color: #242424;
+}
+
+body.dark .topbar {
+    background: linear-gradient(135deg, #1e1b4b, #1e3a8a);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3);
+}
+
+body.dark .stat-card {
+    background-color: #2d2d2d;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3);
+    color: #e0e0e0;
+}
+
+body.dark .stat-card h3 {
+    color: #a0a0a0;
+}
+
+body.dark .stat-card p {
+    color: #64b5f6;
+}
+
+body.dark .recent-section {
+    background-color: #2d2d2d;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3);
+    color: #e0e0e0;
+}
+
+body.dark .section-header h2 {
+    color: #e0e0e0;
+}
+
+body.dark .section-header a {
+    color: #64b5f6;
+}
+
+body.dark .submission-table {
+    background: #2d2d2d;
+}
+
+body.dark .submission-table thead {
+    background: linear-gradient(135deg, #1e1b4b, #1e3a8a);
+}
+
+body.dark .submission-table tbody tr {
+    border-bottom-color: #404040;
+    color: #e0e0e0;
+}
+
+body.dark .submission-table tbody tr:hover {
+    background-color: #333333;
+}
+
+body.dark .submission-table th,
+body.dark .submission-table td {
+    color: #e0e0e0;
+}
+
+body.dark .profile-box {
+    background-color: #4d4d4d;
+    color: #e0e0e0;
+}
+
+body.dark .form-section {
+    background: #2d2d2d;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3);
+    color: #e0e0e0;
+}
+
+body.dark .form-group label {
+    color: #e0e0e0;
+}
+
+body.dark .form-group input,
+body.dark .form-group textarea,
+body.dark .form-group select {
+    background-color: #3d3d3d;
+    border-color: #505050;
+    color: #e0e0e0;
+}
+
+body.dark .form-group input:focus,
+body.dark .form-group textarea:focus,
+body.dark .form-group select:focus {
+    border-color: #64b5f6;
+    background-color: #3d3d3d;
+}
+
+body.dark .question-section {
+    background: #333333;
+    color: #e0e0e0;
+}
+
+body.dark .question-card {
+    background: #2d2d2d;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    color: #e0e0e0;
+}
+
+body.dark .question-card textarea {
+    background-color: #3d3d3d;
+    border-color: #505050;
+    color: #e0e0e0;
+}
+
+body.dark .profile-card {
+    background: #2d2d2d;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.3);
+    color: #e0e0e0;
+}
+
+body.dark .profile-details {
+    color: #e0e0e0;
+}
+
+body.dark .profile-details p {
+    border-bottom-color: #404040;
+}
+
+body.dark .profile-details strong {
+    color: #b0b0b0;
+}
+
+body.dark .nav-btn {
+    background: #404040;
+    color: #e0e0e0;
+    border-color: #505050;
+}
+
+body.dark .nav-btn.primary {
+    background: linear-gradient(135deg, #1e1b4b, #1e3a8a);
+    color: white;
 }
 
 /* =========================
@@ -93,11 +241,16 @@ body {
     border-radius: 8px;
     font-size: 14px;
     transition: background 0.3s ease, transform 0.2s ease;
+    cursor: pointer;
 }
 
 .sidebar-setting:hover {
     background: rgba(255, 255, 255, 0.18);
     transform: translateX(4px);
+}
+
+.dark-toggle:focus {
+    outline: none;
 }
 
 /* =========================
@@ -274,6 +427,31 @@ body {
 .status.graded {
     background: #e6f4ea;
     color: #2e7d32;
+}
+
+body.dark .status.pending {
+    background: #664d00;
+    color: #ffc107;
+}
+
+body.dark .status.graded {
+    background: #1b5e20;
+    color: #81c784;
+}
+
+body.dark .status.fail {
+    background: #b71c1c;
+    color: #ef5350;
+}
+
+body.dark .status.present {
+    background: #1b5e20;
+    color: #81c784;
+}
+
+body.dark .status.absent {
+    background: #b71c1c;
+    color: #ef5350;
 }
 
 /* Action button */
@@ -711,6 +889,10 @@ body {
         border-radius: 0;
         padding: 15px;
     }
+
+    body.dark .main-content {
+        background-color: #1a1a1a;
+    }
 }
 
 @media (max-width: 600px) {
@@ -733,5 +915,13 @@ body {
 
     .stat-card p {
         font-size: 22px;
+    }
+
+    body.dark .submission-table {
+        background: #2d2d2d;
+    }
+
+    body.dark .submission-table tbody tr {
+        color: #e0e0e0;
     }
 }

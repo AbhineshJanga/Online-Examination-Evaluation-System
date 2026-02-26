@@ -29,11 +29,12 @@
                 <a href="submissions.html">Submissions</a>
                 <a href="results.html">Results</a>
                 <a href="profile.html">Profile</a>
-                <a href="../login.html">Logout</a>
+                <a href="#" id="logoutBtn">Logout</a>
+
             </nav>
 
             <div class="sidebar-footer">
-                <a href="#" class="sidebar-setting">Dark Mode 🌙</a>
+                <a href="#" class="sidebar-setting dark-toggle">Dark Mode 🌙</a>
                 <a href="#" class="sidebar-setting">Help ❓</a>
                 <a href="#" class="sidebar-setting">Settings ⚙️</a>
             </div>
@@ -120,7 +121,37 @@
         </main>
 
     </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
 
+            const user = JSON.parse(localStorage.getItem("loggedInUser"));
+
+            if (!user || user.role !== "teacher") {
+                alert("Unauthorized access. Please login.");
+                window.location.href = "../login.html?role=teacher";
+                return;
+            }
+
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const logoutBtn = document.getElementById("logoutBtn");
+
+            if (logoutBtn) {
+                logoutBtn.addEventListener("click", function (e) {
+                    e.preventDefault();
+
+                    localStorage.removeItem("loggedInUser");
+
+                    window.location.href = "../login.html";
+                });
+            }
+
+        });
+    </script>
+
+    <script src="../../js/common.js"></script>
 </body>
 
 </html>

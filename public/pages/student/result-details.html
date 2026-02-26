@@ -29,7 +29,7 @@
             </nav>
 
             <div class="sidebar-footer">
-                <a href="#" class="sidebar-setting">Dark Mode 🌙</a>
+                <a href="#" class="sidebar-setting dark-toggle">Dark Mode 🌙</a>
                 <a href="#" class="sidebar-setting">Help ❓</a>
                 <a href="#" class="sidebar-setting">Settings ⚙️</a>
             </div>
@@ -49,26 +49,29 @@
             <section class="result-details-section">
 
                 <div class="result-summary-card">
-                    <h2>Object-Oriented Programming</h2>
+                    <h2 class="result-exam-name"></h2>
 
-                    <p><strong>Total Questions:</strong> 25</p>
-                    <p><strong>Correct Answers:</strong> 21</p>
-                    <p><strong>Wrong Answers:</strong> 4</p>
-                    <p><strong>Total Marks:</strong> 84 / 100</p>
-                    <p><strong>Percentage:</strong> 84%</p>
+                    <p><strong>Total Questions:</strong> <span class="result-total"></span></p>
+                    <p><strong>Correct Answers:</strong> <span class="result-correct"></span></p>
+                    <p><strong>Wrong Answers:</strong> <span class="result-wrong"></span></p>
+                    <p><strong>Total Marks:</strong> <span class="result-marks"></span></p>
+                    <p><strong>Percentage:</strong> <span class="result-percentage"></span></p>
 
-                    <p class="result-status pass">Status: Passed</p>
+                    <p class="result-status"></p>
 
                     <a href="my-results.html" class="start-btn">
                         Back to My Results
                     </a>
                 </div>
 
+
             </section>
 
         </main>
 
     </div>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/student/studentdashboard.js"></script>
 
 </body>
 

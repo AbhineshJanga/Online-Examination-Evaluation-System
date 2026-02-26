@@ -29,7 +29,7 @@
             </nav>
 
             <div class="sidebar-footer">
-                <a href="#" class="sidebar-setting">Dark Mode 🌙</a>
+                <a href="#" class="sidebar-setting dark-toggle">Dark Mode 🌙</a>
                 <a href="#" class="sidebar-setting">Help ❓</a>
                 <a href="#" class="sidebar-setting">Settings ⚙️</a>
             </div>
@@ -49,36 +49,39 @@
             <section class="exam-details-section">
 
                 <div class="exam-details-card">
-                    <h2>Object-Oriented Programming</h2>
 
-                    <p><strong>Date:</strong> 20 March 2026</p>
-                    <p><strong>Time:</strong> 10:00 AM - 12:00 PM</p>
-                    <p><strong>Total Questions: </strong> 25</p>
-                    <p><strong>Type: </strong>MCQ</p>
-                    <p><strong>Total Marks:</strong> 100</p>
+                    <h2 class="exam-title"></h2>
 
-                    <p class="exam-description">
-                        This exam covers classes, objects, inheritance, polymorphism,
-                        abstraction, and exception handling.
-                    </p>
+                    <p><strong>Date:</strong> <span class="exam-date"></span></p>
+                    <p><strong>Time:</strong> <span class="exam-time"></span></p>
+                    <p><strong>Total Questions:</strong> <span class="exam-questions"></span></p>
+                    <p><strong>Type:</strong> <span class="exam-type"></span></p>
+                    <p><strong>Total Marks:</strong> <span class="exam-marks"></span></p>
 
-                    <a href="Attempt-Exam.html" class="start-btn">
+                    <p class="exam-description"></p>
+
+                    <a href="Attempt-Exam.html" class="start-btn attempt-btn">
                         Attempt Exam
                     </a>
+
                 </div>
 
                 <!-- User Info Card -->
                 <div class="user-info-card">
                     <h3>Student Information</h3>
-                    <p><strong>Username:</strong> johndoe</p>
-                    <p><strong>Email:</strong> johndoe@example.com</p>
+                    <p><strong>Username:</strong> <span class="student-name"></span></p>
+                    <p><strong>Email:</strong> <span class="student-email"></span></p>
                 </div>
+
 
             </section>
 
         </main>
 
     </div>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/student/studentdashboard.js"></script>
+    
 
 </body>
 

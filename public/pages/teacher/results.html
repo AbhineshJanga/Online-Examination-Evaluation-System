@@ -30,7 +30,7 @@
             </nav>
 
             <div class="sidebar-footer">
-                <a href="#" class="sidebar-setting">Dark Mode 🌙</a>
+                <a href="#" class="sidebar-setting dark-toggle">Dark Mode 🌙</a>
                 <a href="#" class="sidebar-setting">Help ❓</a>
                 <a href="#" class="sidebar-setting">Settings ⚙️</a>
             </div>
@@ -50,6 +50,24 @@
 
                 <div class="section-header">
                     <h2>Evaluated Results</h2>
+                </div>
+                <div class="stats-grid">
+
+                    <div class="stat-card">
+                        <h3>Average Marks</h3>
+                        <p id="avgMarks">--</p>
+                    </div>
+
+                    <div class="stat-card">
+                        <h3>Highest Marks</h3>
+                        <p id="highestMarks">--</p>
+                    </div>
+
+                    <div class="stat-card">
+                        <h3>Lowest Marks</h3>
+                        <p id="lowestMarks">--</p>
+                    </div>
+
                 </div>
 
                 <div class="table-container">
@@ -101,6 +119,8 @@
         </main>
 
     </div>
+    <script src="../../js//teacher/results.js"></script>
+    <script src="../../js/common.js"></script>
 
 </body>
 

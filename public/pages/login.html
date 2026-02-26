@@ -120,7 +120,7 @@
     <div class="login-card">
         <div class="text">Please login using your student credentials</div>
 
-        <form onsubmit="return false;">
+        <form id="loginform">
             <label>Username</label>
             <input type="text" placeholder="Enter username" required>
 
@@ -141,24 +141,54 @@
         </div>
     </div>
     <script>
-        const params = new URLSearchParams(window.location.search);
-        const role = params.get("role");
+        document.addEventListener("DOMContentLoaded", function () {
 
-        const textDiv = document.querySelector(".text");
+            const params = new URLSearchParams(window.location.search);
+            const role = params.get("role");
 
-        if (role === "student") {
-            textDiv.innerText = "Please login using your student credentials";
-        }
-        else if (role === "teacher") {
-            textDiv.innerText = "Please login using your teacher credentials";
-        }
-        else if (role === "admin") {
-            textDiv.innerText = "Please login using your administrator credentials";
-        }
-        else {
-            textDiv.innerText = "Please login to continue";
-        }
+            const textDiv = document.querySelector(".text");
+            const form = document.getElementById("loginform");
+
+            if (!role) {
+                textDiv.innerText = "Access denied. Please login from homepage.";
+                form.style.display = "none";
+                return;
+            }
+
+            // Set heading
+            textDiv.innerText = `Please login using your ${role} credentials`;
+
+            form.addEventListener("submit", function (e) {
+                e.preventDefault();
+
+                const username = form.querySelector('input[type="text"]').value.trim();
+                const password = form.querySelector('input[type="password"]').value.trim();
+
+                if (username === "") {
+                    alert("Username is required.");
+                    return;
+                }
+
+                if (password === "") {
+                    alert("Password is required.");
+                    return;
+                }
+
+                // Save session
+                localStorage.setItem("loggedInUser", JSON.stringify({
+                    username: username,
+                    role: role
+                }));
+
+                // Redirect correctly (IMPORTANT FIX)
+                window.location.href = `./${role}/dashboard.html`;
+            });
+
+        });
     </script>
+
+
+
 
 </body>
 

@@ -11,6 +11,276 @@
 body {
     background-color: #f4f6f9;
     color: #333;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* =========================
+   Dark Mode Theme
+========================= */
+body.dark {
+    background-color: #1a1a1a;
+    color: #e0e0e0;
+}
+
+body.dark .dashboard-container {
+    background-color: #1a1a1a;
+}
+
+body.dark .main-content {
+    background-color: #242424;
+}
+
+body.dark .topbar {
+    background: linear-gradient(135deg, #1e1b4b, #1e3a8a);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3);
+}
+
+body.dark .stat-card {
+    background-color: #2d2d2d;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3);
+    color: #e0e0e0;
+}
+
+body.dark .stat-card h3 {
+    color: #a0a0a0;
+}
+
+body.dark .stat-card p {
+    color: #64b5f6;
+}
+
+body.dark .recent-section {
+    background-color: #2d2d2d;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3);
+    color: #e0e0e0;
+}
+
+body.dark .section-header h2 {
+    color: #e0e0e0;
+}
+
+body.dark .section-header a {
+    color: #64b5f6;
+}
+
+body.dark .submission-table {
+    background: #2d2d2d;
+}
+
+body.dark .submission-table thead {
+    background: linear-gradient(135deg, #1e1b4b, #1e3a8a);
+}
+
+body.dark .submission-table tbody tr {
+    border-bottom-color: #404040;
+    color: #e0e0e0;
+}
+
+body.dark .submission-table tbody tr:hover {
+    background-color: #333333;
+}
+
+body.dark .submission-table th,
+body.dark .submission-table td {
+    color: #e0e0e0;
+}
+
+body.dark .profile-box {
+    background-color: #4d4d4d;
+    color: #e0e0e0;
+}
+
+body.dark .form-section {
+    background: #2d2d2d;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3);
+    color: #e0e0e0;
+}
+
+body.dark .form-group label {
+    color: #e0e0e0;
+}
+
+body.dark .form-group input,
+body.dark .form-group textarea,
+body.dark .form-group select {
+    background-color: #3d3d3d;
+    border-color: #505050;
+    color: #e0e0e0;
+}
+
+body.dark .form-group input:focus,
+body.dark .form-group textarea:focus,
+body.dark .form-group select:focus {
+    border-color: #64b5f6;
+    background-color: #3d3d3d;
+}
+
+body.dark .question-section {
+    background: #333333;
+    color: #e0e0e0;
+}
+
+body.dark .question-card {
+    background: #2d2d2d;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    color: #e0e0e0;
+}
+
+body.dark .question-card textarea {
+    background-color: #3d3d3d;
+    border-color: #505050;
+    color: #e0e0e0;
+}
+
+body.dark .profile-card {
+    background: #2d2d2d;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.3);
+    color: #e0e0e0;
+}
+
+body.dark .profile-details {
+    color: #e0e0e0;
+}
+
+body.dark .profile-details p {
+    border-bottom-color: #404040;
+}
+
+body.dark .profile-details strong {
+    color: #b0b0b0;
+}
+
+body.dark .nav-btn {
+    background: #404040;
+    color: #e0e0e0;
+    border-color: #505050;
+}
+
+body.dark .nav-btn.primary {
+    background: linear-gradient(135deg, #1e1b4b, #1e3a8a);
+    color: white;
+}
+
+body.dark .status {
+    filter: invert(1) hue-rotate(180deg);
+}
+
+body.dark .status.pending {
+    background: #664d00;
+    color: #ffc107;
+}
+
+body.dark .status.graded {
+    background: #1b5e20;
+    color: #81c784;
+}
+
+body.dark .status.fail {
+    background: #b71c1c;
+    color: #ef5350;
+}
+
+body.dark .status.present {
+    background: #1b5e20;
+    color: #81c784;
+}
+
+body.dark .status.absent {
+    background: #b71c1c;
+    color: #ef5350;
+}
+
+/* Admin-specific dark mode styles */
+body.dark .controls {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+body.dark .search-bar {
+    flex: 1;
+}
+
+body.dark .search-bar input,
+body.dark .filter-bar select {
+    background-color: #3d3d3d;
+    color: #e0e0e0;
+    border: 1px solid #505050;
+}
+
+body.dark .search-bar input::placeholder {
+    color: #777;
+}
+
+body.dark .tabs {
+    display: flex;
+    gap: 10px;
+    border-bottom: 1px solid #505050;
+    margin-bottom: 15px;
+}
+
+body.dark .tab {
+    background: transparent;
+    color: #a0a0a0;
+    border: none;
+    border-bottom: 2px solid transparent;
+    padding: 8px 12px;
+    cursor: pointer;
+}
+
+body.dark .tab.active {
+    color: #64b5f6;
+    border-bottom-color: #64b5f6;
+}
+
+body.dark .user-actions {
+    display: flex;
+    gap: 8px;
+}
+
+body.dark .action-btn,
+body.dark .edit-btn,
+body.dark .delete-btn,
+body.dark .disable-btn {
+    background: linear-gradient(135deg, #6a11cb, #2575fc);
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+body.dark .delete-btn {
+    background: #b71c1c;
+}
+
+body.dark .disable-btn {
+    background: #ff6f00;
+}
+
+body.dark .warning {
+    background: #ff6f00;
+}
+
+body.dark .monitoring-table {
+    background-color: #2d2d2d;
+    color: #e0e0e0;
+}
+
+body.dark .monitoring-table th {
+    background: linear-gradient(135deg, #1e1b4b, #1e3a8a);
+    color: #e0e0e0;
+}
+
+body.dark .monitoring-table td {
+    color: #e0e0e0;
+    border-bottom: 1px solid #505050;
+}
+
+body.dark .violation-badge {
+    background: #b71c1c;
+    color: #ef5350;
 }
 
 /* =========================

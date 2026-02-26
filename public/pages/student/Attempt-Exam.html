@@ -12,64 +12,45 @@
 <body class="exam-body">
 
     <header class="exam-header">
-        <h2>Object-Oriented Programming Exam</h2>
+        <h2 class="exam-title"></h2>
+
 
         <div class="exam-header-right">
             <div class="exam-timer">
-                ⏱ 01:59:30
+                ⏱ <span class="timer-display"></span>
             </div>
-            <div class="exam-student-name">
-                John Doe
-            </div>
+
+            <div class="exam-student-name"></div>
+
         </div>
     </header>
 
     <!-- Main Exam Container -->
     <div class="exam-container">
 
-        <!-- Question Section (60%) -->
+        <!-- Question Section -->
         <div class="question-section">
-            <h3>Question 1</h3>
-            <p>
-                Which of the following is a core concept of Object-Oriented Programming?
-            </p>
+            <h3 class="question-number"></h3>
+            <p class="question-text"></p>
         </div>
 
-        <!-- Options Section (40%) -->
+
+        <!-- Options Section  -->
         <div class="options-section">
 
-            <label class="option-card">
-                <input type="radio" name="q1" />
-                <div class="option-content">Encapsulation</div>
-            </label>
+            <div class="options-container"></div>
 
-            <label class="option-card">
-                <input type="radio" name="q1" />
-                <div class="option-content">Compilation</div>
-            </label>
-
-            <label class="option-card">
-                <input type="radio" name="q1" />
-                <div class="option-content">Linking</div>
-            </label>
-
-            <label class="option-card">
-                <input type="radio" name="q1" />
-                <div class="option-content">Execution</div>
-            </label>
-
-            <!-- Navigation Buttons -->
             <div class="exam-navigation">
-                <button class="nav-btn">Previous</button>
-                <button class="nav-btn primary">Next</button>
-                <a href="exam-submitted.html" class="nav-btn finish-exam">
-                    Finish Exam
-                </a>
+                <button class="nav-btn prev-btn">Previous</button>
+                <button class="nav-btn primary next-btn">Next</button>
+                <button class="nav-btn finish-exam">Finish Exam</button>
             </div>
 
         </div>
 
+
     </div>
+    <script src="../../js/student/studentdashboard.js"></script>
 </body>
 
 </html>

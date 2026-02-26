@@ -29,7 +29,7 @@
             </nav>
 
             <div class="sidebar-footer">
-                <a href="#" class="sidebar-setting">Dark Mode 🌙</a>
+                <a href="#" class="sidebar-setting dark-toggle">Dark Mode 🌙</a>
                 <a href="#" class="sidebar-setting">Help ❓</a>
                 <a href="#" class="sidebar-setting">Settings ⚙️</a>
             </div>
@@ -51,12 +51,12 @@
                 <h2>Student Information</h2>
 
                 <div class="info-grid">
-                    <p><strong>Name:</strong> Rahul Sharma</p>
-                    <p><strong>Exam:</strong> Mathematics</p>
-                    <p><strong>OS:</strong> Windows 11</p>
-                    <p><strong>Browser:</strong> Chrome</p>
-                    <p><strong>IP Address:</strong> 192.168.1.12</p>
-                    <p><strong>Fullscreen:</strong> Yes</p>
+                    <p><strong>Name:</strong> <span id="studentName"></span></p>
+                    <p><strong>Exam:</strong> <span id="examName"></span></p>
+                    <p><strong>OS:</strong> <span id="os"></span></p>
+                    <p><strong>Browser:</strong> <span id="browser"></span></p>
+                    <p><strong>IP Address:</strong> <span id="ip"></span></p>
+                    <p><strong>Fullscreen:</strong> <span id="fullscreen"></span></p>
                 </div>
 
             </section>
@@ -67,11 +67,10 @@
                 <h2>Risk Summary</h2>
 
                 <div class="risk-summary">
-                    <span class="risk high">High Risk</span>
-                    <p>Total Violations: 5</p>
-                    <p>Tab Switch: 2</p>
-                    <p>Copy Attempt: 1</p>
-                    <p>Key Flag: Suspicious Pattern</p>
+                    <span class="risk" id="riskBadge"></span>
+                    <p>Total Violations: <span id="totalViolations"></span></p>
+                    <p>Tab Switch: <span id="tabSwitchCount"></span></p>
+                    <p>Key Flag: <span id="keyFlagStatus"></span></p>
                 </div>
 
             </section>
@@ -81,21 +80,8 @@
 
                 <h2>Violation Log</h2>
 
-                <div class="violation-log">
-                    <div class="log-item">
-                        <span class="log-time">10:12 AM</span>
-                        <span class="log-text">Tab switched to another window</span>
-                    </div>
+                <div class="violation-log" id="violationLog">
 
-                    <div class="log-item">
-                        <span class="log-time">10:18 AM</span>
-                        <span class="log-text">Copy shortcut detected (Ctrl+C)</span>
-                    </div>
-
-                    <div class="log-item">
-                        <span class="log-time">10:25 AM</span>
-                        <span class="log-text">Multiple key presses flagged</span>
-                    </div>
                 </div>
 
             </section>
@@ -114,7 +100,8 @@
         </main>
 
     </div>
-
+    <script src="../../js/common.js"></script>
+    <script type="module" src="../../js/admin/view-monitoring.js"></script>
 </body>
 
 </html>

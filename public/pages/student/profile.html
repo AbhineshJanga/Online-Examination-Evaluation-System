@@ -25,11 +25,11 @@
                 <a href="viewExams.html">View Exams</a>
                 <a href="my-results.html">My Results</a>
                 <a href="profile.html" class="active">Profile</a>
-                <a href="../../login.html">Logout</a>
+                <a href="../login.html">Logout</a>
             </nav>
 
             <div class="sidebar-footer">
-                <a href="#" class="sidebar-setting">Dark Mode 🌙</a>
+                <a href="#" class="sidebar-setting dark-toggle">Dark Mode 🌙</a>
                 <a href="#" class="sidebar-setting">Help ❓</a>
                 <a href="#" class="sidebar-setting">Settings ⚙️</a>
             </div>
@@ -41,7 +41,7 @@
             <header class="topbar">
                 <h1>My Profile</h1>
                 <div class="profile-box">
-                    <span>User</span>
+
                 </div>
             </header>
 
@@ -50,22 +50,15 @@
 
                 <div class="profile-card">
 
-                    <div class="profile-avatar">
-                        User
-                    </div>
+                    <div class="profile-avatar" id="profileAvatar"></div>
 
-                    <div class="profile-details">
-                        <p><strong>Full Name:</strong> user</p>
-                        <p><strong>Email:</strong> user123@example.com</p>
-                        <p><strong>Registration No:</strong> 24BIT0401</p>
-                        <p><strong>Department:</strong> SCORE</p>
-                        <p><strong>Phone:</strong> 1234567890</p>
-                        <p><strong>DOB:</strong> DD-MM-YYYY</p>
-                    </div>
+
+                    <div class="profile-details" id="profileDetails"></div>
+
 
                     <div class="profile-actions">
-                        <button class="nav-btn primary">Edit Profile</button>
-                        <button class="nav-btn">Change Password</button>
+                        <button class="nav-btn primary" id="editProfileBtn">Edit Profile</button>
+                        <button class="nav-btn" id="changePasswordBtn">Change Password</button>
                     </div>
 
                 </div>
@@ -75,6 +68,10 @@
         </main>
 
     </div>
+
+    <script type="module" src="../../js/student/student-profile.js"></script>
+    <!-- <script src="../../js/student/studentdashboard.js"></script> -->
+     <script src="../../js/common.js"></script>
 
 </body>
 

@@ -27,11 +27,12 @@
                 <a href="monitor-exams.html">Monitor Exams</a>
                 <a href="results-overview.html">Results Overview</a>
                 <a href="profile.html">Profile</a>
-                <a href="../login.html">Logout</a>
+                <a href="#" id="logoutBtn">Logout</a>
+
             </nav>
 
             <div class="sidebar-footer">
-                <a href="#" class="sidebar-setting">Dark Mode 🌙</a>
+                <a href="#" class="sidebar-setting dark-toggle">Dark Mode 🌙</a>
                 <a href="#" class="sidebar-setting">Help ❓</a>
                 <a href="#" class="sidebar-setting">Settings ⚙️</a>
             </div>
@@ -53,22 +54,22 @@
 
                 <div class="stat-card">
                     <h3>Total Students</h3>
-                    <p>120</p>
+                    <p id="totalStudents"></p>
                 </div>
 
                 <div class="stat-card">
                     <h3>Total Faculty</h3>
-                    <p>15</p>
+                    <p id="totalFaculty"></p>
                 </div>
 
                 <div class="stat-card">
                     <h3>Total Exams</h3>
-                    <p>25</p>
+                    <p id="totalExams"></p>
                 </div>
 
                 <div class="stat-card">
                     <h3>Active Exams</h3>
-                    <p>5</p>
+                    <p id="activeExams"></p>
                 </div>
 
             </section>
@@ -90,25 +91,7 @@
                             </tr>
                         </thead>
 
-                        <tbody>
-                            <tr>
-                                <td>Prof. -</td>
-                                <td>Created Mathematics Exam</td>
-                                <td>15 Feb 2026</td>
-                            </tr>
-
-                            <tr>
-                                <td>-</td>
-                                <td>Submitted Programming Exam</td>
-                                <td>16 Feb 2026</td>
-                            </tr>
-
-                            <tr>
-                                <td>Admin</td>
-                                <td>Added New Faculty</td>
-                                <td>17 Feb 2026</td>
-                            </tr>
-                        </tbody>
+                        <tbody id="activityTableBody"></tbody>
                     </table>
                 </div>
 
@@ -117,6 +100,37 @@
         </main>
 
     </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const user = JSON.parse(localStorage.getItem("loggedInUser"));
+
+            if (!user || user.role !== "admin") {
+                alert("Unauthorized access. Please login.");
+                window.location.href = "../login.html?role=admin";
+                return;
+            }
+
+        });
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const logoutBtn = document.getElementById("logoutBtn");
+
+            if (logoutBtn) {
+                logoutBtn.addEventListener("click", function (e) {
+                    e.preventDefault();
+
+                    localStorage.removeItem("loggedInUser");
+
+                    window.location.href = "../login.html";
+                });
+            }
+
+        });
+    </script>
+
+    <script src="../../js/common.js"></script>
+    <script type="module" src="../../js/admin/admin-dashboard.js"></script>
 
 </body>
 

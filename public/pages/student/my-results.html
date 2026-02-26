@@ -4,15 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Results</title>
+    <title>My Results</title>
 
-    <!-- Correct CSS Path -->
     <link rel="stylesheet" href="../../css/student-dashboard.css">
 </head>
 
 <body>
 
-    <!-- Main Grid Container -->
     <div class="dashboard-container">
 
         <!-- Sidebar -->
@@ -31,7 +29,7 @@
             </nav>
 
             <div class="sidebar-footer">
-                <a href="#" class="sidebar-setting">Dark Mode 🌙</a>
+                <a href="#" class="sidebar-setting dark-toggle">Dark Mode 🌙</a>
                 <a href="#" class="sidebar-setting">Help ❓</a>
                 <a href="#" class="sidebar-setting">Settings ⚙️</a>
             </div>
@@ -42,46 +40,24 @@
 
             <!-- Top Bar -->
             <header class="topbar">
-                <h1>Welcome</h1>
-                <div class="profile-box">
-                    <span>User</span>
-                </div>
+                <h1>My Results</h1>
+                <div class="profile-box"></div>
             </header>
 
+            <!-- Results Section -->
             <section class="view-results">
 
-                <h2>My Results</h2>
+                <h2>Exam Performance</h2>
 
-                <div class="result-grid">
-
-                    <div class="result-card">
-                        <h3>Object-Oriented Programming</h3>
-                        <p class="result-date">Exam Date: 20 March 2026</p>
-                        <p class="result-score">Score: 85%</p>
-                        <p class="result-status pass">Status: Passed</p>
-
-                        <a href="result-details.html" class="start-btn">Result Details</a>
-
-                    </div>
-
-                    <div class="result-card">
-                        <h3>Data Structures</h3>
-                        <p class="result-date">Exam Date: 15 March 2026</p>
-                        <p class="result-score">Score: --</p>
-                        <p class="result-status pending">Status: Not Published</p>
-
-                        <a href="result-details.html" class="start-btn">Result Details</a>
-
-                    </div>
-
-                </div>
+                <!-- This will be filled dynamically using JavaScript -->
+                <div class="result-grid"></div>
 
             </section>
-
-
         </main>
-
     </div>
+
+    <script src="../../js/common.js"></script>
+    <script src="../../js/student/studentdashboard.js"></script>
 
 </body>
 

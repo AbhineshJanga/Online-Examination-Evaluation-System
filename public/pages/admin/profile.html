@@ -29,7 +29,7 @@
             </nav>
 
             <div class="sidebar-footer">
-                <a href="#" class="sidebar-setting">Dark Mode 🌙</a>
+                <a href="#" class="sidebar-setting dark-toggle">Dark Mode 🌙</a>
                 <a href="#" class="sidebar-setting">Help ❓</a>
                 <a href="#" class="sidebar-setting">Settings ⚙️</a>
             </div>
@@ -40,9 +40,6 @@
 
             <header class="topbar">
                 <h1>Admin Profile</h1>
-                <div class="profile-box">
-                    <span>AD</span>
-                </div>
             </header>
 
             <!-- Profile Section -->
@@ -50,11 +47,9 @@
 
                 <div class="profile-card">
 
-                    <div class="profile-avatar">
-                        AD
-                    </div>
+                    <div class="profile-avatar" id="profileAvatar"></div>
 
-                    <div class="profile-details">
+                    <div class="profile-details" id="profileDetails">
                         <p><strong>Full Name:</strong> System Administrator</p>
                         <p><strong>Email:</strong> admin@example.com</p>
                         <p><strong>Role:</strong> Super Admin</p>
@@ -64,8 +59,8 @@
                     </div>
 
                     <div class="profile-actions">
-                        <button class="action-btn">Edit Profile</button>
-                        <button class="action-btn warning">Change Password</button>
+                        <button class="action-btn" id="editProfileBtn">Edit Profile</button>
+                        <button class="action-btn warning" id="changePasswordBtn">Change Password</button>
                     </div>
 
                 </div>
@@ -75,6 +70,8 @@
         </main>
 
     </div>
+    <script src="../../js/common.js"></script>
+    <script type="module" src="../../js/admin/admin-profile.js"></script>
 
 </body>
 

@@ -27,11 +27,12 @@
                 <a href="viewExams.html">View Exams</a>
                 <a href="my-results.html">My Results</a>
                 <a href="profile.html">Profile</a>
-                <a href="../login.html">Logout</a>
+                <a href="#" id="logoutBtn">Logout</a>
+
             </nav>
 
             <div class="sidebar-footer">
-                <a href="#" class="sidebar-setting">Dark Mode 🌙</a>
+                <a href="#" class="sidebar-setting dark-toggle">Dark Mode 🌙</a>
                 <a href="#" class="sidebar-setting">Help ❓</a>
                 <a href="#" class="sidebar-setting">Settings ⚙️</a>
             </div>
@@ -43,9 +44,7 @@
             <!-- Top Bar -->
             <header class="topbar">
                 <h1>Welcome</h1>
-                <div class="profile-box">
-                    <span>User</span>
-                </div>
+                <div class="profile-box"></div>
             </header>
 
             <!-- Stats Section -->
@@ -80,6 +79,7 @@
                         <div class="progress-bar">
                             <span class="progress-fill"></span>
                         </div>
+
                     </div>
 
 
@@ -98,6 +98,39 @@
         </main>
 
     </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const user = JSON.parse(localStorage.getItem("loggedInUser"));
+
+            if (!user || user.role !== "student") {
+                alert("Unauthorized access. Please login.");
+                window.location.href = "../login.html?role=student";
+                return;
+            }
+
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const logoutBtn = document.getElementById("logoutBtn");
+
+            if (logoutBtn) {
+                logoutBtn.addEventListener("click", function (e) {
+                    e.preventDefault();
+
+                    localStorage.removeItem("loggedInUser");
+
+                    window.location.href = "../login.html";
+                });
+            }
+
+        });
+    </script>
+
+    <script src="../../js/common.js"></script>
+    <script src="../../js/student/studentdashboard.js"></script>
+
 
 </body>
 
