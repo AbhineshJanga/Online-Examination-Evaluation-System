@@ -1,3 +1,5 @@
 *.vpp.lck
 *.vpp.bak_*
 *.mdj
+node_modules/
+.env
