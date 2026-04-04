@@ -837,8 +837,62 @@ body.dark .status.absent {
 
 
 /* =========================
-   Responsive Design
+   Evaluation Options Display
 ========================= */
+
+.options-list {
+    margin: 15px 0;
+}
+
+.options-list ul {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0;
+}
+
+.options-list li {
+    padding: 8px 12px;
+    margin: 5px 0;
+    border-radius: 6px;
+    background: #f8f9fa;
+    border-left: 4px solid #dee2e6;
+    transition: all 0.2s ease;
+}
+
+.options-list li.correct-student {
+    background: #d4edda;
+    border-left-color: #28a745;
+    font-weight: 600;
+}
+
+.options-list li.student-answer {
+    background: #fff3cd;
+    border-left-color: #ffc107;
+    font-weight: 600;
+}
+
+.options-list li.correct-answer {
+    background: #d1ecf1;
+    border-left-color: #17a2b8;
+    font-weight: 600;
+}
+
+body.dark .options-list li {
+    background: #2d2d2d;
+    color: #e0e0e0;
+}
+
+body.dark .options-list li.correct-student {
+    background: #1e3a1e;
+}
+
+body.dark .options-list li.student-answer {
+    background: #3a2a1a;
+}
+
+body.dark .options-list li.correct-answer {
+    background: #1a2a2a;
+}
 @media (max-width: 900px) {
 
     .dashboard-container {

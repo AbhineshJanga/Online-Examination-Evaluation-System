@@ -124,9 +124,16 @@
     <script>
         document.addEventListener("DOMContentLoaded", function () {
 
-            const user = JSON.parse(localStorage.getItem("loggedInUser"));
+            const token = localStorage.getItem("token");
+            let user = null;
 
-            if (!user || user.role !== "teacher") {
+            try {
+                user = JSON.parse(localStorage.getItem("user"));
+            } catch (e) {
+                console.error("Invalid user data in localStorage");
+            }
+
+            if (!token || !user || user.role !== "teacher") {
                 alert("Unauthorized access. Please login.");
                 window.location.href = "../login.html?role=teacher";
                 return;
@@ -142,15 +149,18 @@
                 logoutBtn.addEventListener("click", function (e) {
                     e.preventDefault();
 
-                    localStorage.removeItem("loggedInUser");
+                    localStorage.removeItem("token");
+                    localStorage.removeItem("user");
 
-                    window.location.href = "../login.html";
+                    window.location.href = "../login.html?role=teacher";
                 });
             }
 
         });
     </script>
 
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="../../js/socket.js"></script>
     <script src="../../js/common.js"></script>
 </body>
 

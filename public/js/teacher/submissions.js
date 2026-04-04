@@ -4,51 +4,83 @@ document.addEventListener("DOMContentLoaded", function () {
 
     loadSubmissions();
 
-    function loadSubmissions() {
-
-        const submissions = JSON.parse(localStorage.getItem("submissions")) || [];
-        const exams = JSON.parse(localStorage.getItem("exams")) || [];
+    async function loadSubmissions() {
 
         tableBody.innerHTML = "";
 
-        if (submissions.length === 0) {
-            tableBody.innerHTML = `
-                <tr>
-                    <td colspan="6" style="text-align:center;">
-                        No submissions available.
+        try {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                alert("Please login to view submissions.");
+                window.location.href = "../login.html";
+                return;
+            }
+
+            const response = await fetch("/api/exams/submissions", {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                }
+            });
+
+            const data = await response.json();
+
+            if (!response.ok || !data.success) {
+                throw new Error(data.message || "Failed to load submissions");
+            }
+
+            const submissions = data.submissions;
+
+            if (submissions.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="6" style="text-align:center;">
+                            No submissions available.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            submissions.forEach(sub => {
+                const examName = sub.exam?.title || "Unknown Exam";
+                const studentName = sub.student?.name || "Unknown Student";
+                const submittedAt = sub.submittedAt ? new Date(sub.submittedAt).toLocaleString() : "Unknown Date";
+                const totalQuestions = sub.totalQuestions || 0;
+                const marksDisplay = sub.score !== undefined ? sub.score : "--";
+
+                if (!sub.exam || !sub.student) {
+                    console.warn("⚠️ Submission missing relations:", sub);
+                }
+
+                const row = document.createElement("tr");
+
+                row.innerHTML = `
+                    <td>${studentName}</td>
+                    <td>${examName}</td>
+                    <td>${submittedAt}</td>
+                    <td>${marksDisplay}/${totalQuestions}</td>
+                    <td>
+                        <span class="status graded">
+                            ✓ Graded
+                        </span>
                     </td>
-                </tr>
+                    <td>
+                        <a href="evaluate-submission.html?id=${sub._id}" class="action-btn">
+                            View
+                        </a>
+                    </td>
+                `;
+
+                tableBody.appendChild(row);
+            });
+        } catch (error) {
+            console.error("Cannot load submissions:", error);
+            tableBody.innerHTML = `
+                <tr><td colspan="6" style="text-align:center;">Unable to fetch submissions.</td></tr>
             `;
-            return;
         }
-
-        submissions.forEach(sub => {
-
-            const exam = exams.find(e => e.id === sub.examId);
-
-            const examName = exam ? exam.subject : "Unknown Exam";
-
-            const row = document.createElement("tr");
-
-            row.innerHTML = `
-                <td>${sub.studentName}</td>
-                <td>${examName}</td>
-                <td>${new Date(sub.submittedAt).toLocaleString()}</td>
-                <td>${sub.totalMarks !== null ? sub.totalMarks : "--"}</td>
-                <td>
-                    <span class="status ${sub.status === "Pending" ? "pending" : "graded"}">
-                        ${sub.status}
-                    </span>
-                </td>
-                <td>
-                    <a href="evaluate-submission.html?id=${sub.id}" class="action-btn">
-                        ${sub.status === "Pending" ? "Evaluate" : "View"}
-                    </a>
-                </td>
-            `;
-
-            tableBody.appendChild(row);
-        });
     }
 
 });

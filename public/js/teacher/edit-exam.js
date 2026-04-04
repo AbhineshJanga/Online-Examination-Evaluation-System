@@ -1,172 +1,194 @@
-document.addEventListener("DOMContentLoaded", function () {
+﻿const API_BASE = "";
+const form = document.querySelector(".exam-form");
+const questionsContainer = document.getElementById("questionsContainer");
+const addQuestionBtn = document.getElementById("addQuestionBtn");
 
-    const form = document.querySelector(".exam-form");
-    const questionsContainer = document.getElementById("questionsContainer");
-    const addQuestionBtn = document.getElementById("addQuestionBtn");
+function getAuthHeaders() {
+    const token = localStorage.getItem("token");
+    return { "Content-Type": "application/json", Authorization: `Bearer ${token}` };
+}
 
-    const params = new URLSearchParams(window.location.search);
-    const examId = Number(params.get("id"));
+const params = new URLSearchParams(window.location.search);
+const examId = params.get("id");
 
-    if (!examId) {
-        alert("Invalid exam ID.");
+if (!examId) {
+    alert("Invalid exam ID.");
+    window.location.href = "manage-exams.html";
+}
+
+async function fetchExam() {
+    try {
+        const response = await fetch(`${API_BASE}/api/exams/${examId}`, {
+            method: "GET",
+            headers: getAuthHeaders()
+        });
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+            throw new Error(data.message || "Unable to load exam.");
+        }
+
+        return data.exam;
+    } catch (err) {
+        console.error(err);
+        alert(err.message || "Unable to fetch exam details.");
         window.location.href = "manage-exams.html";
-        return;
     }
+}
 
-    const exams = JSON.parse(localStorage.getItem("exams")) || [];
-    const exam = exams.find(e => e.id === examId);
-
-    if (!exam) {
-        alert("Exam not found.");
-        window.location.href = "manage-exams.html";
-        return;
-    }
-
-    // ================= LOAD BASIC DETAILS =================
-
-    const textInputs = form.querySelectorAll('input[type="text"]');
-    const mainTextarea = form.querySelector(".form-grid textarea");
-
-    textInputs[0].value = exam.subject;
-    textInputs[1].value = exam.courseId;
-    mainTextarea.value = exam.instructions;
-
-    form.querySelector("select").value = exam.format;
-    form.querySelector('input[type="date"]').value = exam.date;
-    form.querySelector('input[type="number"]').value = exam.duration;
-
-    // ================= LOAD QUESTIONS =================
-
+function clearQuestions() {
     questionsContainer.innerHTML = "";
+}
 
-    exam.questions.forEach((q, index) => {
+function buildQuestionCard(q, idx) {
+    const questionDiv = document.createElement("div");
+    questionDiv.classList.add("question-card");
+    questionDiv.dataset.index = idx;
 
-        const questionDiv = document.createElement("div");
-        questionDiv.classList.add("question-card");
+    const optionsHtml = q.options
+        .map((option, oi) => `<input type="text" class="option-input" value="${option}" data-option-index="${oi}" />`)
+        .join("");
 
-        questionDiv.innerHTML = `
-            <div class="question-header">
-                <h4>Question ${index + 1}</h4>
-                <button type="button" class="remove-btn">Remove</button>
-            </div>
+    questionDiv.innerHTML = `
+        <div class="question-header">
+            <h4>Question ${idx + 1}</h4>
+            <button type="button" class="remove-btn">Remove</button>
+        </div>
+        <div class="form-group">
+            <label>Question Text</label>
+            <textarea rows="3" class="question-text">${q.questionText}</textarea>
+        </div>
+        <div class="options-grid">
+            ${optionsHtml}
+        </div>
+        <div class="form-group">
+            <label>Correct Option Index (0-3)</label>
+            <input type="number" class="correct-answer" min="0" max="3" value="${q.correctAnswer}" />
+        </div>
+    `;
 
-            <div class="form-group">
-                <label>Question Text</label>
-                <textarea rows="3">${q.questionText}</textarea>
-            </div>
-
-            <div class="options-grid">
-                <input type="text" value="${q.options[0]}">
-                <input type="text" value="${q.options[1]}">
-                <input type="text" value="${q.options[2]}">
-                <input type="text" value="${q.options[3]}">
-            </div>
-
-            <div class="form-group">
-                <label>Correct Answer</label>
-                <select>
-                    <option ${q.correctAnswer === "A" ? "selected" : ""}>A</option>
-                    <option ${q.correctAnswer === "B" ? "selected" : ""}>B</option>
-                    <option ${q.correctAnswer === "C" ? "selected" : ""}>C</option>
-                    <option ${q.correctAnswer === "D" ? "selected" : ""}>D</option>
-                </select>
-            </div>
-        `;
-
-        questionsContainer.appendChild(questionDiv);
+    questionDiv.querySelector(".remove-btn").addEventListener("click", () => {
+        questionDiv.remove();
+        updateQuestionHeaders();
     });
 
-    attachRemoveFunctionality();
+    return questionDiv;
+}
 
-    function attachRemoveFunctionality() {
-        document.querySelectorAll(".remove-btn").forEach(btn => {
-            btn.onclick = function () {
-                this.closest(".question-card").remove();
-                updateNumbers();
-            };
-        });
-    }
-
-    function updateNumbers() {
-        const allQuestions = document.querySelectorAll(".question-card");
-        allQuestions.forEach((q, index) => {
-            q.querySelector("h4").textContent = `Question ${index + 1}`;
-        });
-    }
-
-    // ================= UPDATE EXAM =================
-
-    form.addEventListener("submit", function (e) {
-        e.preventDefault();
-
-        const subject = textInputs[0].value.trim();
-        const courseId = textInputs[1].value.trim();
-        const instructions = mainTextarea.value.trim();
-        const format = form.querySelector("select").value;
-        const date = form.querySelector('input[type="date"]').value;
-        const duration = form.querySelector('input[type="number"]').value;
-
-        if (!subject || !courseId || !instructions || !date || duration <= 0) {
-            alert("Please fill all required fields.");
-            return;
-        }
-
-        const questionCards = document.querySelectorAll(".question-card");
-
-        if (questionCards.length === 0) {
-            alert("At least one question required.");
-            return;
-        }
-
-        let updatedQuestions = [];
-
-        for (let card of questionCards) {
-
-            const questionText = card.querySelector("textarea").value.trim();
-            const optionInputs = card.querySelectorAll(".options-grid input");
-            const correctAnswer = card.querySelector("select").value;
-
-            if (!questionText) {
-                alert("Question text cannot be empty.");
-                return;
-            }
-
-            let options = [];
-
-            for (let opt of optionInputs) {
-                if (!opt.value.trim()) {
-                    alert("All options must be filled.");
-                    return;
-                }
-                options.push(opt.value.trim());
-            }
-
-            updatedQuestions.push({
-                questionText,
-                options,
-                correctAnswer
-            });
-        }
-
-        // Update exam in array
-        const index = exams.findIndex(e => e.id === examId);
-
-        exams[index] = {
-            ...exam,
-            subject,
-            courseId,
-            instructions,
-            format,
-            date,
-            duration,
-            questions: updatedQuestions
-        };
-
-        localStorage.setItem("exams", JSON.stringify(exams));
-
-        alert("Exam updated successfully!");
-
-        window.location.href = "manage-exams.html";
+function updateQuestionHeaders() {
+    document.querySelectorAll(".question-card").forEach((card, idx) => {
+        const h4 = card.querySelector("h4");
+        if (h4) h4.textContent = `Question ${idx + 1}`;
     });
+}
 
+function addQuestion() {
+    const newQuestion = {
+        questionText: "",
+        options: ["", "", "", ""],
+        correctAnswer: 0
+    };
+
+    const card = buildQuestionCard(newQuestion, document.querySelectorAll(".question-card").length);
+    questionsContainer.appendChild(card);
+}
+
+async function populateForm(exam) {
+    form.querySelector("input[name='title']").value = exam.title || "";
+    form.querySelector("textarea[name='description']").value = exam.description || "";
+    form.querySelector("input[name='duration']").value = exam.duration || 0;
+
+    clearQuestions();
+    (exam.questions || []).forEach((q, idx) => {
+        questionsContainer.appendChild(buildQuestionCard(q, idx));
+    });
+}
+
+function collectQuestions() {
+    return Array.from(document.querySelectorAll(".question-card")).map((card) => {
+        const questionText = card.querySelector(".question-text").value.trim();
+        const options = Array.from(card.querySelectorAll(".option-input")).map((opt) => opt.value.trim());
+        const correctAnswer = Number(card.querySelector(".correct-answer").value);
+
+        return { questionText, options, correctAnswer };
+    });
+}
+
+addQuestionBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    addQuestion();
 });
+
+form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const title = form.querySelector("input[name='title']").value.trim();
+    const description = form.querySelector("textarea[name='description']").value.trim();
+    const duration = Number(form.querySelector("input[name='duration']").value);
+
+    if (!title || !duration || duration <= 0) {
+        alert("Title and duration are required.");
+        return;
+    }
+
+    const questions = collectQuestions();
+    if (questions.length === 0) {
+        alert("Add at least one question.");
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_BASE}/api/exams/${examId}`, {
+            method: "PUT",
+            headers: getAuthHeaders(),
+            body: JSON.stringify({ title, description, duration, questions })
+        });
+
+        const data = await response.json();
+        if (!response.ok || !data.success) {
+            throw new Error(data.message || "Unable to update exam.");
+        }
+
+        alert("Exam updated successfully.");
+        window.location.href = "manage-exams.html";
+    } catch (err) {
+        console.error(err);
+        alert(err.message || "Failed to update exam.");
+    }
+});
+
+(async () => {
+    const exam = await fetchExam();
+    if (exam) {
+        // Build simple form fields if not already present
+        let titleInput = form.querySelector("input[name='title']");
+        if (!titleInput) {
+            const titleField = document.createElement("div");
+            titleField.innerHTML = `<div class="form-group"><label>Title</label><input type="text" name="title" required /></div>`;
+            form.insertBefore(titleField, form.querySelector(".form-grid"));
+            titleInput = titleField.querySelector("input");
+        }
+
+        let descriptionTextarea = form.querySelector("textarea[name='description']");
+        if (!descriptionTextarea) {
+            const descField = document.createElement("div");
+            descField.innerHTML = `<div class="form-group"><label>Description</label><textarea name="description"></textarea></div>`;
+            form.insertBefore(descField, form.querySelector(".form-grid"));
+            descriptionTextarea = descField.querySelector("textarea");
+        }
+
+        let durationInput = form.querySelector("input[name='duration']");
+        if (!durationInput) {
+            const durationField = document.createElement("div");
+            durationField.innerHTML = `<div class="form-group"><label>Duration</label><input type="number" name="duration" min="1" required /></div>`;
+            form.insertBefore(durationField, form.querySelector(".form-grid"));
+            durationInput = durationField.querySelector("input");
+        }
+
+        titleInput.value = exam.title || "";
+        descriptionTextarea.value = exam.description || "";
+        durationInput.value = exam.duration || 0;
+
+        populateForm(exam);
+    }
+})();

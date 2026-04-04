@@ -12,7 +12,7 @@ exports.registerUser = async (req, res) => {
     try {
         const { name, email, password, role } = req.body;
 
-        // ✅ Validation
+        //  Validation
         if (!name || !email || !password) {
             return res.status(400).json({
                 success: false,
@@ -20,7 +20,7 @@ exports.registerUser = async (req, res) => {
             });
         }
 
-        // ✅ Check if user exists
+        //  Check if user exists
         const userExists = await User.findOne({ email });
         if (userExists) {
             return res.status(400).json({
@@ -29,7 +29,7 @@ exports.registerUser = async (req, res) => {
             });
         }
 
-        // ✅ Validate role (optional)
+        //  Validate role (optional)
         let userRole = "student"; // default
 
         if (role) {
@@ -42,11 +42,11 @@ exports.registerUser = async (req, res) => {
             userRole = role;
         }
 
-        // ✅ Hash password
+        //  Hash password
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        // ✅ Create user
+        //  Create user
         const user = new User({
             name,
             email,
@@ -74,7 +74,7 @@ exports.loginUser = async (req, res) => {
     try {
         const { email, password } = req.body;
 
-        // ✅ Validation
+        //  Validation
         if (!email || !password) {
             return res.status(400).json({
                 success: false,
@@ -82,7 +82,7 @@ exports.loginUser = async (req, res) => {
             });
         }
 
-        // ✅ Check user
+        //  Check user
         const user = await User.findOne({ email });
         if (!user) {
             return res.status(400).json({
@@ -91,7 +91,7 @@ exports.loginUser = async (req, res) => {
             });
         }
 
-        // ✅ Check password
+        //  Check password
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
             return res.status(400).json({
@@ -100,7 +100,7 @@ exports.loginUser = async (req, res) => {
             });
         }
 
-        // ✅ Generate token
+        //  Generate token
         const token = jwt.sign(
             { id: user._id, role: user.role },
             process.env.JWT_SECRET,

@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Details</title>
+
     <style>
         body {
             margin: 0;
@@ -36,7 +37,6 @@
             text-align: center;
             font-size: 18px;
             font-weight: bolder;
-            color: #030303;
             margin-bottom: 20px;
         }
 
@@ -46,19 +46,12 @@
             margin-bottom: 5px;
         }
 
-
         input {
             width: 100%;
-            box-sizing: border-box;
             padding: 10px;
             margin-bottom: 15px;
             border-radius: 4px;
             border: 1px solid #ccc;
-            outline: none;
-        }
-
-        input:focus {
-            border-color: #2575fc;
         }
 
         button {
@@ -69,7 +62,6 @@
             background: #2575fc;
             color: white;
             font-size: 16px;
-            font-weight: 600;
             cursor: pointer;
         }
 
@@ -85,32 +77,6 @@
         .back a {
             text-decoration: none;
             color: #2575fc;
-            font-size: 14px;
-        }
-
-        .password {
-            text-align: center;
-            margin-top: 15px;
-        }
-
-        .password a {
-            text-decoration: none;
-            color: #2575fc;
-            font-size: 14px;
-        }
-
-        @media (max-width: 480px) {
-            .login-card {
-                padding: 20px;
-            }
-
-            .text {
-                font-size: 16px;
-            }
-        }
-
-        a {
-            cursor: pointer;
         }
     </style>
 </head>
@@ -118,14 +84,14 @@
 <body>
 
     <div class="login-card">
-        <div class="text">Please login using your student credentials</div>
+        <div class="text">Loading...</div>
 
         <form id="loginform">
-            <label>Username</label>
-            <input type="text" placeholder="Enter username" required>
+            <label>Email</label>
+            <input type="text" id="email" placeholder="Enter email" required>
 
             <label>Password</label>
-            <input type="password" placeholder="Enter password" required>
+            <input type="password" id="password" placeholder="Enter password" required>
 
             <button type="submit">Login</button>
         </form>
@@ -135,11 +101,8 @@
         <div class="back">
             <a href="../index.html">Back to homepage</a>
         </div>
-
-        <div class="password">
-            <a href="">Forgot Password</a>
-        </div>
     </div>
+
     <script>
         document.addEventListener("DOMContentLoaded", function () {
 
@@ -149,46 +112,59 @@
             const textDiv = document.querySelector(".text");
             const form = document.getElementById("loginform");
 
+            // ❌ No role → block access
             if (!role) {
                 textDiv.innerText = "Access denied. Please login from homepage.";
                 form.style.display = "none";
                 return;
             }
 
-            // Set heading
+            // ✅ Set heading
             textDiv.innerText = `Please login using your ${role} credentials`;
 
-            form.addEventListener("submit", function (e) {
+            // ✅ LOGIN HANDLER
+            form.addEventListener("submit", async function (e) {
                 e.preventDefault();
 
-                const username = form.querySelector('input[type="text"]').value.trim();
-                const password = form.querySelector('input[type="password"]').value.trim();
+                const email = document.getElementById("email").value.trim();
+                const password = document.getElementById("password").value.trim();
 
-                if (username === "") {
-                    alert("Username is required.");
+                if (!email || !password) {
+                    alert("All fields are required");
                     return;
                 }
 
-                if (password === "") {
-                    alert("Password is required.");
-                    return;
+                try {
+                    const response = await fetch("http://localhost:5000/api/auth/login", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({ email, password })
+                    });
+
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        alert(data.message || "Login failed");
+                        return;
+                    }
+
+                    //  Store token + user
+                    localStorage.setItem("token", data.token);
+                    localStorage.setItem("user", JSON.stringify(data.user));
+
+                    //  Redirect based on role
+                    window.location.href = `../pages/${data.user.role}/dashboard.html`;
+
+                } catch (error) {
+                    console.error(error);
+                    alert("Server error");
                 }
-
-                // Save session
-                localStorage.setItem("loggedInUser", JSON.stringify({
-                    username: username,
-                    role: role
-                }));
-
-                // Redirect correctly (IMPORTANT FIX)
-                window.location.href = `./${role}/dashboard.html`;
             });
 
         });
     </script>
-
-
-
 
 </body>
 

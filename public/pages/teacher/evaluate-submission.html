@@ -40,90 +40,38 @@
         <main class="main-content">
 
             <header class="topbar">
-                <h1>Evaluate Submission</h1>
+                <h1>View Submission (Auto-Evaluated)</h1>
                 <div class="profile-box">
                     <span>User</span>
                 </div>
             </header>
 
-            <!-- Student Info -->
+            <!-- Auto-Evaluation Summary -->
+            <section class="form-section">
+
+                <div class="section-header">
+                    <h2>Auto-Evaluated Results</h2>
+                    <p style="color: #666; font-size: 14px;">✅ This exam has been automatically evaluated. 1 mark per correct answer.</p>
+                </div>
+
+                <div class="question-card" style="background:#e8f5e9; border-left: 4px solid #4caf50;">
+                    <h4>Exam Summary</h4>
+                    <p><strong>Score:</strong> <span id="summaryScore">--</span> / <span id="summaryTotal">--</span></p>
+                    <p><strong>Percentage:</strong> <span id="summaryPercentage">--</span>%</p>
+                    <p><strong>Status:</strong> <span style="color: #4caf50; font-weight: bold;">✓ Graded</span></p>
+                </div>
+
+            </section>
+
             <!-- Questions Section -->
             <section class="form-section">
 
                 <div class="section-header">
-                    <h2>Questions & Evaluation</h2>
+                    <h2>Question Review</h2>
                 </div>
 
-                <!-- Question 1 -->
-                <div class="question-card">
-
-                    <div class="question-header">
-                        <h4>Question 1</h4>
-                    </div>
-
-                    <p><strong>Question:</strong> --</p>
-
-                    <p><strong>Student Answer:</strong> -</p>
-                    <p><strong>Correct Answer:</strong> -</p>
-
-                    <div class="form-group">
-                        <label>Marks (Out of 5)</label>
-                        <input type="number" placeholder="Enter marks">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Feedback (Optional)</label>
-                        <textarea rows="2" placeholder="Enter feedback"></textarea>
-                    </div>
-
-                </div>
-
-                <!-- Question 2 -->
-                <div class="question-card">
-
-                    <div class="question-header">
-                        <h4>Question 2</h4>
-                    </div>
-
-                    <p><strong>Question:</strong> --</p>
-
-                    <p><strong>Student Answer:</strong> -</p>
-                    <p><strong>Correct Answer:</strong> -</p>
-
-                    <div class="form-group">
-                        <label>Marks (Out of 5)</label>
-                        <input type="number" placeholder="Enter marks">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Feedback (Optional)</label>
-                        <textarea rows="2" placeholder="Enter feedback"></textarea>
-                    </div>
-
-                </div>
-
-                <!-- Total Marks Section -->
-                <div class="question-card" style="background:#f8f9fd;">
-
-                    <div class="question-header">
-                        <h4>Total Evaluation</h4>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Total Marks</label>
-                        <input type="number" placeholder="Total marks">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Final Remarks</label>
-                        <textarea rows="3" placeholder="Overall feedback"></textarea>
-                    </div>
-
-                </div>
-
-                <!-- Save Button -->
-                <div class="form-actions" style="margin-top: 20px;">
-                    <button class="primary-btn">Save Evaluation</button>
+                <div id="questionsContainer">
+                    <!-- Questions will be dynamically loaded here -->
                 </div>
 
             </section>

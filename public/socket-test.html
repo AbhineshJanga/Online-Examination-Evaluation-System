@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Socket.IO Test</title>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+</head>
+<body>
+    <h1>Socket.IO Connection Test</h1>
+    <div id="status">Connecting...</div>
+    <button id="testEvent">Send Test Event</button>
+    <div id="events"></div>
+
+    <script>
+        const statusDiv = document.getElementById('status');
+        const eventsDiv = document.getElementById('events');
+
+        try {
+            const socket = io('http://localhost:5000');
+
+            socket.on('connect', () => {
+                statusDiv.innerHTML = '✅ <strong>Connected to Socket.IO server</strong>';
+                statusDiv.style.color = 'green';
+                console.log('Connected:', socket.id);
+            });
+
+            socket.on('disconnect', () => {
+                statusDiv.innerHTML = '❌ <strong>Disconnected from Socket.IO server</strong>';
+                statusDiv.style.color = 'red';
+            });
+
+            socket.on('connect_error', (error) => {
+                statusDiv.innerHTML = `❌ <strong>Connection failed:</strong> ${error.message}`;
+                statusDiv.style.color = 'red';
+                console.error('Connection error:', error);
+            });
+
+            document.getElementById('testEvent').addEventListener('click', () => {
+                socket.emit('monitoring-event', {
+                    type: 'TEST_EVENT',
+                    user: 'test-user',
+                    examId: 'test-exam',
+                    time: new Date().toISOString()
+                });
+
+                eventsDiv.innerHTML += '<p>📤 Sent test monitoring event</p>';
+            });
+
+            socket.on('monitoring-event', (data) => {
+                eventsDiv.innerHTML += `<p>📥 Received: ${JSON.stringify(data)}</p>`;
+            });
+
+        } catch (error) {
+            statusDiv.innerHTML = `❌ <strong>Socket.IO initialization failed:</strong> ${error.message}`;
+            statusDiv.style.color = 'red';
+        }
+    </script>
+</body>
+</html>

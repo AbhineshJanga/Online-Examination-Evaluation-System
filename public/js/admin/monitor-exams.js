@@ -6,47 +6,132 @@ import { monitorSessions } from "./admin-data.js";
 
 
 /* =========================
-   DOM
+   SOCKET.IO MONITORING
 ========================= */
 
-const tabs = document.querySelectorAll(".tab");
-const tableBody = document.getElementById("monitorTableBody");
+// Initialize Socket.IO connection
+const socket = io(window.location.origin);
 
-let currentTab = "active";
+// Real-time monitoring data
+let realTimeSessions = [...monitorSessions];
 
+// Handle cheating alerts
+socket.on('cheating-alert', (alert) => {
+    console.log('🚨 Cheating alert received:', alert);
 
-/* =========================
-   RISK CALCULATION
-========================= */
+    // Update or add session data
+    updateSessionWithAlert(alert);
 
-function getRisk(session) {
+    // Re-render table if current tab shows violations
+    if (currentTab === 'violations' || currentTab === 'active') {
+        renderTable();
+    }
 
-    if (session.tabSwitch > 1 || session.keyFlag) return "high";
-    if (session.tabSwitch === 1) return "warning";
-    return "low";
+    // Show notification
+    showAlertNotification(alert);
+});
+
+function updateSessionWithAlert(alert) {
+    // Find or create session
+    let session = realTimeSessions.find(s =>
+        s.student === alert.userId && s.exam === 'Active Exam' // We need to map examId to exam name
+    );
+
+    if (!session) {
+        // Create new session
+        session = {
+            sessionId: Date.now(),
+            student: alert.userId,
+            exam: 'Active Exam', // Should map from examId
+            os: 'Unknown',
+            browser: 'Unknown',
+            ip: 'Unknown',
+            tabSwitch: 0,
+            keyFlag: false,
+            fullscreen: true,
+            status: 'active',
+            violations: []
+        };
+        realTimeSessions.push(session);
+    }
+
+    // Update based on alert type
+    if (alert.type === 'TAB_SWITCH') {
+        session.tabSwitch++;
+        session.violations.push({
+            time: new Date(alert.time).toLocaleTimeString(),
+            type: 'Tab switched to another window'
+        });
+    } else if (alert.type === 'WINDOW_BLUR') {
+        session.violations.push({
+            time: new Date(alert.time).toLocaleTimeString(),
+            type: 'Window focus lost'
+        });
+    } else if (alert.type === 'FULLSCREEN_EXIT') {
+        session.fullscreen = false;
+        session.violations.push({
+            time: new Date(alert.time).toLocaleTimeString(),
+            type: 'Exited fullscreen mode'
+        });
+    }
 }
 
+function showAlertNotification(alert) {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = 'alert-notification';
+    notification.innerHTML = `
+        <div class="alert-content">
+            <strong>🚨 Alert:</strong> ${alert.userId} - ${alert.message}
+            <button class="alert-close">&times;</button>
+        </div>
+    `;
 
-/* =========================
-   RENDER TABLE
-========================= */
+    // Add styles
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: #ff4444;
+        color: white;
+        padding: 15px;
+        border-radius: 5px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        z-index: 1000;
+        max-width: 300px;
+    `;
 
+    document.body.appendChild(notification);
+
+    // Auto remove after 5 seconds
+    setTimeout(() => {
+        if (notification.parentNode) {
+            notification.remove();
+        }
+    }, 5000);
+
+    // Close button
+    notification.querySelector('.alert-close').addEventListener('click', () => {
+        notification.remove();
+    });
+}
+
+// Update renderTable to use realTimeSessions
 function renderTable() {
-
     tableBody.innerHTML = "";
 
     let filtered = [];
 
     if (currentTab === "active") {
-        filtered = monitorSessions.filter(s => s.status === "active");
+        filtered = realTimeSessions.filter(s => s.status === "active");
     }
 
     if (currentTab === "completed") {
-        filtered = monitorSessions.filter(s => s.status === "completed");
+        filtered = realTimeSessions.filter(s => s.status === "completed");
     }
 
     if (currentTab === "violations") {
-        filtered = monitorSessions.filter(s => s.violations.length > 0);
+        filtered = realTimeSessions.filter(s => s.violations.length > 0);
     }
 
     if (filtered.length === 0) {
@@ -55,9 +140,7 @@ function renderTable() {
     }
 
     filtered.forEach(session => {
-
         const risk = getRisk(session);
-
         const row = document.createElement("tr");
 
         row.innerHTML = `
@@ -76,6 +159,15 @@ function renderTable() {
         tableBody.appendChild(row);
     });
 }
+
+/* =========================
+   DOM
+========================= */
+
+const tabs = document.querySelectorAll(".tab");
+const tableBody = document.getElementById("monitorTableBody");
+
+let currentTab = "active";
 
 
 /* =========================

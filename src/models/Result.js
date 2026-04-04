@@ -1,5 +1,3 @@
-// models/Result.js
-
 const mongoose = require("mongoose");
 
 const resultSchema = new mongoose.Schema({
@@ -17,7 +15,7 @@ const resultSchema = new mongoose.Schema({
 
     answers: [
         {
-            questionId: String,
+            questionIndex: Number,
             selectedOption: Number
         }
     ],
@@ -28,6 +26,27 @@ const resultSchema = new mongoose.Schema({
     },
 
     totalQuestions: Number,
+
+    status: {
+        type: String,
+        enum: ["Submitted", "Graded", "Auto-Submitted", "Cheating Detected"],
+        default: "Submitted"
+    },
+
+    violations: {
+        type: Number,
+        default: 0
+    },
+
+    evaluatedScore: {
+        type: Number,
+        default: null
+    },
+
+    gradedAt: {
+        type: Date,
+        default: null
+    },
 
     submittedAt: {
         type: Date,

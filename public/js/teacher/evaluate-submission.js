@@ -1,7 +1,7 @@
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", async function () {
 
     const params = new URLSearchParams(window.location.search);
-    const submissionId = Number(params.get("id"));
+    const submissionId = params.get("id");
 
     if (!submissionId) {
         alert("Invalid submission.");
@@ -9,18 +9,31 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
     }
 
-    let submissions = JSON.parse(localStorage.getItem("submissions")) || [];
-    const exams = JSON.parse(localStorage.getItem("exams")) || [];
+    const token = localStorage.getItem("token");
+    if (!token) {
+        alert("Please login to view submission details.");
+        window.location.href = "../login.html";
+        return;
+    }
 
-    const submission = submissions.find(s => s.id === submissionId);
+    const submissionResponse = await fetch(`/api/exams/submissions/${submissionId}`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+        }
+    });
 
-    if (!submission) {
-        alert("Submission not found.");
+    const submissionData = await submissionResponse.json();
+
+    if (!submissionResponse.ok || !submissionData.success) {
+        alert(submissionData.message || "Submission not found.");
         window.location.href = "submissions.html";
         return;
     }
 
-    const exam = exams.find(e => e.id === submission.examId);
+    const submission = submissionData.submission;
+    const exam = submission.exam;
 
     if (!exam) {
         alert("Exam not found.");
@@ -28,114 +41,91 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
     }
 
-    const container = document.querySelector(".form-section");
+    // Display auto-evaluated summary
+    document.getElementById("summaryScore").textContent = submission.score;
+    document.getElementById("summaryTotal").textContent = submission.totalQuestions;
+    const percentage = Math.round((submission.score / submission.totalQuestions) * 100);
+    document.getElementById("summaryPercentage").textContent = percentage;
 
-    // Clear old static content
-    container.innerHTML = `
-        <div class="section-header">
-            <h2>Evaluate: ${submission.studentName}</h2>
-        </div>
-    `;
+    // Create answer map
+    const mapAnswers = submission.answers.reduce((acc, answer) => {
+        if (answer && answer.questionIndex !== undefined) {
+            acc[answer.questionIndex] = answer.selectedOption;
+        }
+        return acc;
+    }, {});
 
-    let totalMarks = 0;
+    // Render questions with auto-evaluation
+    const questionsContainer = document.getElementById("questionsContainer");
 
     exam.questions.forEach((q, index) => {
 
-        const studentAnswerIndex = submission.answers[index];
+        const studentAnswerIndex = mapAnswers[index];
         const studentAnswer =
             studentAnswerIndex !== null && studentAnswerIndex !== undefined
                 ? q.options[studentAnswerIndex]
                 : "Not Answered";
 
-        const correctAnswerLetter = q.correctAnswer;
-        const correctAnswerIndex = correctAnswerLetter.charCodeAt(0) - 65;
-        const correctAnswer = q.options[correctAnswerIndex];
+        const correctAnswerIndex = q.correctAnswer;
+        const correctAnswer = q.options[correctAnswerIndex] || "Unknown";
+
+        // Check if student answer is correct
+        const isCorrect = studentAnswerIndex === correctAnswerIndex;
+        const marks = isCorrect ? 1 : 0;
+
+        // Display all options with styling
+        const optionsHtml = q.options.map((option, optIndex) => {
+            const isStudentAnswer = studentAnswerIndex === optIndex;
+            const isCorrectAnswer = correctAnswerIndex === optIndex;
+            let optionClass = "";
+            let optionLabel = "";
+
+            if (isStudentAnswer && isCorrectAnswer) {
+                optionClass = "correct-student";
+                optionLabel = " ✓ (Student - Correct)";
+            } else if (isStudentAnswer) {
+                optionClass = "student-answer";
+                optionLabel = " ✗ (Student - Incorrect)";
+            } else if (isCorrectAnswer) {
+                optionClass = "correct-answer";
+                optionLabel = " ✓ (Correct Answer)";
+            }
+
+            return `<li class="${optionClass}">${String.fromCharCode(65 + optIndex)}. ${option}${optionLabel}</li>`;
+        }).join("");
 
         const questionDiv = document.createElement("div");
         questionDiv.classList.add("question-card");
+        questionDiv.style.borderLeft = isCorrect ? "4px solid #4caf50" : "4px solid #f44336";
 
         questionDiv.innerHTML = `
             <div class="question-header">
-                <h4>Question ${index + 1}</h4>
+                <h4>Question ${index + 1} 
+                    ${isCorrect ? '<span style="color: #4caf50; font-weight: bold;">✓ Correct</span>' : '<span style="color: #f44336; font-weight: bold;">✗ Incorrect</span>'}
+                </h4>
             </div>
 
             <p><strong>Question:</strong> ${q.questionText}</p>
-            <p><strong>Student Answer:</strong> ${studentAnswer}</p>
-            <p><strong>Correct Answer:</strong> ${correctAnswer}</p>
 
-            <div class="form-group">
-                <label>Marks (Out of 5)</label>
-                <input type="number" min="0" max="5" class="mark-input" data-index="${index}">
+            <div class="options-list">
+                <strong>Options:</strong>
+                <ul>${optionsHtml}</ul>
+            </div>
+
+            <div style="margin-top: 15px; padding: 10px; background: #f5f5f5; border-radius: 4px;">
+                <p><strong>Mark:</strong> <span style="font-size: 18px; font-weight: bold; color: ${isCorrect ? '#4caf50' : '#f44336'};">${marks}</span> / 1</p>
             </div>
         `;
 
-        container.appendChild(questionDiv);
+        questionsContainer.appendChild(questionDiv);
     });
 
-    // ===== TOTAL SECTION =====
+    // Add back button
+    const backButton = document.createElement("div");
+    backButton.style.marginTop = "20px";
+    backButton.innerHTML = `<button class="primary-btn" onclick="window.location.href='submissions.html'">Back to Submissions</button>`;
+    questionsContainer.appendChild(backButton);
 
-    const totalSection = document.createElement("div");
-    totalSection.classList.add("question-card");
-
-    totalSection.innerHTML = `
-        <div class="question-header">
-            <h4>Total Evaluation</h4>
-        </div>
-
-        <div class="form-group">
-            <label>Total Marks</label>
-            <input type="number" id="totalMarks" readonly>
-        </div>
-
-        <div style="margin-top:15px;">
-            <button class="primary-btn" id="saveEvaluation">
-                Save Evaluation
-            </button>
-        </div>
-    `;
-
-    container.appendChild(totalSection);
-
-    const markInputs = document.querySelectorAll(".mark-input");
-    const totalMarksInput = document.getElementById("totalMarks");
-
-    // ===== Auto Calculate Total =====
-
-    markInputs.forEach(input => {
-        input.addEventListener("input", function () {
-
-            let sum = 0;
-
-            markInputs.forEach(i => {
-                const value = Number(i.value);
-                if (!isNaN(value)) sum += value;
-            });
-
-            totalMarksInput.value = sum;
-        });
-    });
-
-    // ===== Save Evaluation =====
-
-    document.getElementById("saveEvaluation").addEventListener("click", function () {
-
-        for (let input of markInputs) {
-            const value = Number(input.value);
-
-            if (isNaN(value) || value < 0 || value > 5) {
-                alert("Marks must be between 0 and 5.");
-                return;
-            }
-        }
-
-        submission.totalMarks = Number(totalMarksInput.value);
-        submission.status = "Graded";
-
-        localStorage.setItem("submissions", JSON.stringify(submissions));
-
-        alert("Evaluation saved successfully!");
-
-        window.location.href = "submissions.html";
-    });
+    console.log(`✅ Auto-evaluated submission viewed - Student: ${submission.student.email}, Score: ${submission.score}/${submission.totalQuestions}`);
 
 });
