@@ -13,13 +13,6 @@ if (!token || user.role !== "admin") {
 const API_BASE_URL = "/api";
 
 /* =========================
-   IMPORT DATA
-========================= */
-
-import { activityLog, monitorSessions, results } from "./admin-data.js";
-
-
-/* =========================
    DOM REFERENCES
 ========================= */
 
@@ -36,27 +29,21 @@ const activityTableBody = document.getElementById("activityTableBody");
 
 async function loadStats() {
     try {
-        const response = await fetch(`${API_BASE_URL}/admin/users`, {
+        const response = await fetch(`${API_BASE_URL}/admin/stats`, {
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json'
             }
         });
 
-        if (!response.ok) throw new Error('Failed to fetch users');
+        if (!response.ok) throw new Error('Failed to fetch stats');
 
-        const usersData = await response.json();
-        const userList = usersData.users || [];
+        const data = await response.json();
 
-        const totalStudents = userList.filter(u => u.role === "student").length;
-        const totalFaculty = userList.filter(u => u.role === "teacher").length;
-        const totalExams = results.length;
-        const activeExams = monitorSessions.filter(s => s.status === "active").length;
-
-        totalStudentsEl.textContent = totalStudents;
-        totalFacultyEl.textContent = totalFaculty;
-        totalExamsEl.textContent = totalExams;
-        activeExamsEl.textContent = activeExams;
+        totalStudentsEl.textContent = data.totalStudents;
+        totalFacultyEl.textContent = data.totalTeachers;
+        totalExamsEl.textContent = data.totalExams;
+        activeExamsEl.textContent = data.activeExams;
     } catch (error) {
         console.error('Error loading stats:', error);
         totalStudentsEl.textContent = "--";
@@ -75,27 +62,44 @@ function renderStats() {
    ACTIVITY RENDERING
 ========================= */
 
-function renderActivity() {
+async function renderActivity() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/admin/activity`, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
 
-    activityTableBody.innerHTML = "";
+        if (!response.ok) throw new Error('Failed to fetch activity log');
 
-    // Sort by latest date (descending)
-    const sorted = [...activityLog].sort((a, b) => 
-        new Date(b.date) - new Date(a.date)
-    );
+        const data = await response.json();
+        const activityLog = data.activities || [];
 
-    sorted.forEach(item => {
+        activityTableBody.innerHTML = "";
 
-        const row = document.createElement("tr");
+        if (activityLog.length === 0) {
+            activityTableBody.innerHTML = `<tr><td colspan="3" style="text-align:center;">No activity yet</td></tr>`;
+            return;
+        }
 
-        row.innerHTML = `
-            <td>${item.user}</td>
-            <td>${item.action}</td>
-            <td>${item.date}</td>
-        `;
+        // Display activities (already sorted descending from backend)
+        activityLog.forEach(item => {
+            const row = document.createElement("tr");
+            const date = new Date(item.timestamp).toLocaleString();
 
-        activityTableBody.appendChild(row);
-    });
+            row.innerHTML = `
+                <td>${item.userId?.name || 'Unknown'}</td>
+                <td>${item.action}</td>
+                <td>${date}</td>
+            `;
+
+            activityTableBody.appendChild(row);
+        });
+    } catch (error) {
+        console.error('Error loading activity:', error);
+        activityTableBody.innerHTML = `<tr><td colspan="3" style="text-align:center; color: red;">Error loading activity</td></tr>`;
+    }
 }
 
 

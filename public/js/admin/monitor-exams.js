@@ -1,9 +1,16 @@
 /* =========================
-   IMPORT DATA
+   AUTH CHECK
 ========================= */
 
-import { monitorSessions } from "./admin-data.js";
+const token = localStorage.getItem("token");
+const user = JSON.parse(localStorage.getItem("user") || "{}");
 
+if (!token || user.role !== "admin") {
+    alert("Access denied. Admin only.");
+    window.location.href = "../login.html";
+}
+
+const API_BASE_URL = "/api";
 
 /* =========================
    SOCKET.IO MONITORING
@@ -13,17 +20,50 @@ import { monitorSessions } from "./admin-data.js";
 const socket = io(window.location.origin);
 
 // Real-time monitoring data
-let realTimeSessions = [...monitorSessions];
+let realTimeSessions = [];
 
-// Handle cheating alerts
+// Load initial sessions from API
+async function loadInitialSessions() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/admin/monitoring/sessions`, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            realTimeSessions = data.sessions || [];
+            renderTable();
+        }
+    } catch (error) {
+        console.error('Error loading initial sessions:', error);
+        document.getElementById("monitorTableBody").innerHTML = `<tr><td colspan="10" style="text-align:center; color: red;">Error loading sessions</td></tr>`;
+    }
+}
+
+// Handle cheating alerts (real-time via Socket.IO)
 socket.on('cheating-alert', (alert) => {
     console.log('🚨 Cheating alert received:', alert);
 
-    // Update or add session data
-    updateSessionWithAlert(alert);
-
-    // Re-render table if current tab shows violations
-    if (currentTab === 'violations' || currentTab === 'active') {
+    // Find and update session
+    const session = realTimeSessions.find(s => s.socketId === alert.socketId || s.studentId === alert.userId);
+    if (session && alert.type) {
+        if (!session.violations) session.violations = [];
+        session.violations.push({
+            time: new Date(alert.time).toLocaleTimeString(),
+            type: alert.type
+        });
+        
+        // Update risk level
+        if (alert.type === 'TAB_SWITCH') {
+            session.tabSwitch = (session.tabSwitch || 0) + 1;
+        } else if (alert.type === 'SUSPICIOUS_KEYS') {
+            session.keysFlag = true;
+        }
+        
+        // Re-render table
         renderTable();
     }
 
@@ -31,58 +71,13 @@ socket.on('cheating-alert', (alert) => {
     showAlertNotification(alert);
 });
 
-function updateSessionWithAlert(alert) {
-    // Find or create session
-    let session = realTimeSessions.find(s =>
-        s.student === alert.userId && s.exam === 'Active Exam' // We need to map examId to exam name
-    );
-
-    if (!session) {
-        // Create new session
-        session = {
-            sessionId: Date.now(),
-            student: alert.userId,
-            exam: 'Active Exam', // Should map from examId
-            os: 'Unknown',
-            browser: 'Unknown',
-            ip: 'Unknown',
-            tabSwitch: 0,
-            keyFlag: false,
-            fullscreen: true,
-            status: 'active',
-            violations: []
-        };
-        realTimeSessions.push(session);
-    }
-
-    // Update based on alert type
-    if (alert.type === 'TAB_SWITCH') {
-        session.tabSwitch++;
-        session.violations.push({
-            time: new Date(alert.time).toLocaleTimeString(),
-            type: 'Tab switched to another window'
-        });
-    } else if (alert.type === 'WINDOW_BLUR') {
-        session.violations.push({
-            time: new Date(alert.time).toLocaleTimeString(),
-            type: 'Window focus lost'
-        });
-    } else if (alert.type === 'FULLSCREEN_EXIT') {
-        session.fullscreen = false;
-        session.violations.push({
-            time: new Date(alert.time).toLocaleTimeString(),
-            type: 'Exited fullscreen mode'
-        });
-    }
-}
-
 function showAlertNotification(alert) {
     // Create notification element
     const notification = document.createElement('div');
     notification.className = 'alert-notification';
     notification.innerHTML = `
         <div class="alert-content">
-            <strong>🚨 Alert:</strong> ${alert.userId} - ${alert.message}
+            <strong>🚨 Alert:</strong> ${alert.studentName} - ${alert.type}
             <button class="alert-close">&times;</button>
         </div>
     `;
@@ -116,22 +111,40 @@ function showAlertNotification(alert) {
     });
 }
 
-// Update renderTable to use realTimeSessions
+
+/* =========================
+   DOM REFERENCES
+========================= */
+
+const tabs = document.querySelectorAll(".tab");
+const tableBody = document.getElementById("monitorTableBody");
+
+let currentTab = "active";
+
+
+/* =========================
+   GET RISK LEVEL
+========================= */
+
+function getRisk(session) {
+    if (session.tabSwitch > 2 || session.keysFlag) return "high";
+    if (session.tabSwitch > 0 || (session.violations && session.violations.length > 1)) return "warning";
+    return "low";
+}
+
+
+/* =========================
+   RENDER TABLE
+========================= */
+
 function renderTable() {
     tableBody.innerHTML = "";
 
-    let filtered = [];
+    let filtered = [...realTimeSessions];
 
-    if (currentTab === "active") {
-        filtered = realTimeSessions.filter(s => s.status === "active");
-    }
-
-    if (currentTab === "completed") {
-        filtered = realTimeSessions.filter(s => s.status === "completed");
-    }
-
+    // Filter by tab
     if (currentTab === "violations") {
-        filtered = realTimeSessions.filter(s => s.violations.length > 0);
+        filtered = filtered.filter(s => s.violations && s.violations.length > 0);
     }
 
     if (filtered.length === 0) {
@@ -144,30 +157,21 @@ function renderTable() {
         const row = document.createElement("tr");
 
         row.innerHTML = `
-            <td>${session.student}</td>
-            <td>${session.exam}</td>
+            <td>${session.studentName}</td>
+            <td>${session.examName}</td>
             <td>${session.os}</td>
             <td>${session.browser}</td>
             <td>${session.ip}</td>
-            <td><span class="status ${session.tabSwitch ? "warning" : "active"}">${session.tabSwitch}</span></td>
-            <td><span class="status ${session.keyFlag ? "inactive" : "active"}">${session.keyFlag ? "Detected" : "No"}</span></td>
+            <td><span class="status ${session.tabSwitch > 0 ? "warning" : "active"}">${session.tabSwitch}</span></td>
+            <td><span class="status ${session.keysFlag ? "inactive" : "active"}">${session.keysFlag ? "Detected" : "No"}</span></td>
             <td><span class="status ${session.fullscreen ? "active" : "inactive"}">${session.fullscreen ? "Yes" : "No"}</span></td>
             <td><span class="risk ${risk}">${risk.toUpperCase()}</span></td>
-            <td><a href="view-monitoring.html?id=${session.sessionId}" class="action-btn">View</a></td>
+            <td><a href="view-monitoring.html?id=${session.socketId}" class="action-btn">View</a></td>
         `;
 
         tableBody.appendChild(row);
     });
 }
-
-/* =========================
-   DOM
-========================= */
-
-const tabs = document.querySelectorAll(".tab");
-const tableBody = document.getElementById("monitorTableBody");
-
-let currentTab = "active";
 
 
 /* =========================
@@ -176,12 +180,9 @@ let currentTab = "active";
 
 tabs.forEach(tab => {
     tab.addEventListener("click", () => {
-
         tabs.forEach(t => t.classList.remove("active"));
         tab.classList.add("active");
-
         currentTab = tab.dataset.tab;
-
         renderTable();
     });
 });
@@ -191,4 +192,4 @@ tabs.forEach(tab => {
    INIT
 ========================= */
 
-renderTable();
+loadInitialSessions();

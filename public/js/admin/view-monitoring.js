@@ -1,18 +1,11 @@
 /* =========================
-   IMPORT DATA
-========================= */
-
-import { monitorSessions } from "./admin-data.js";
-
-
-/* =========================
    GET SESSION ID
 ========================= */
 
 const params = new URLSearchParams(window.location.search);
 const sessionId = params.get("id");
 
-const session = monitorSessions.find(s => s.sessionId == sessionId);
+let session = null;
 
 
 /* =========================
@@ -35,13 +28,41 @@ const violationLog = document.getElementById("violationLog");
 
 
 /* =========================
-   RISK CALCULATION
+   LOAD SESSION DATA
 ========================= */
 
-function calculateRisk() {
+async function loadSession() {
+    try {
+        const token = localStorage.getItem("token");
+        const response = await fetch(`/api/admin/monitoring/${sessionId}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
 
-    if (session.tabSwitch > 1 || session.keyFlag) return "high";
-    if (session.tabSwitch === 1) return "warning";
+        if (!response.ok) throw new Error('Failed to fetch session');
+
+        const data = await response.json();
+        session = data.session;
+
+        if (!session) {
+            alert("Session not found");
+            return;
+        }
+
+        renderInfo();
+        renderRisk();
+        renderLog();
+    } catch (error) {
+        console.error('Error loading session:', error);
+        alert("Error loading session data");
+    }
+}
+
+function calculateRisk() {
+    if (session.tabSwitch > 2 || session.keysFlag) return "high";
+    if (session.tabSwitch > 0 || (session.violations && session.violations.length > 1)) return "warning";
     return "low";
 }
 
@@ -57,11 +78,11 @@ function renderInfo() {
         return;
     }
 
-    studentNameEl.textContent = session.student;
-    examNameEl.textContent = session.exam;
-    osEl.textContent = session.os;
-    browserEl.textContent = session.browser;
-    ipEl.textContent = session.ip;
+    studentNameEl.textContent = session.studentName || "Unknown";
+    examNameEl.textContent = session.examName || "Unknown Exam";
+    osEl.textContent = session.os || "Unknown";
+    browserEl.textContent = session.browser || "Unknown";
+    ipEl.textContent = session.ip || "Unknown";
     fullscreenEl.textContent = session.fullscreen ? "Yes" : "No";
 }
 
@@ -77,9 +98,9 @@ function renderRisk() {
     riskBadge.textContent = risk.toUpperCase();
     riskBadge.classList.add(risk);
 
-    totalViolationsEl.textContent = session.violations.length;
-    tabSwitchCountEl.textContent = session.tabSwitch;
-    keyFlagStatusEl.textContent = session.keyFlag ? "Detected" : "No";
+    totalViolationsEl.textContent = session.violations ? session.violations.length : 0;
+    tabSwitchCountEl.textContent = session.tabSwitch || 0;
+    keyFlagStatusEl.textContent = session.keysFlag ? "Detected" : "No";
 }
 
 
@@ -115,6 +136,4 @@ function renderLog() {
    INIT
 ========================= */
 
-renderInfo();
-renderRisk();
-renderLog();
+loadSession();

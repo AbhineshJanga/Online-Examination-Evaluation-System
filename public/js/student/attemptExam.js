@@ -99,6 +99,20 @@ async function requestFullScreen() {
     }
 }
 
+// ================= BROWSER DETECTION =================
+
+function getBrowserName() {
+  const ua = navigator.userAgent;
+  
+  if (ua.includes("Chrome") && !ua.includes("Chromium")) return "Chrome";
+  if (ua.includes("Firefox")) return "Firefox";
+  if (ua.includes("Edg")) return "Edge";
+  if (ua.includes("Safari") && !ua.includes("Chrome")) return "Safari";
+  if (ua.includes("Opera")) return "Opera";
+  
+  return "Unknown";
+}
+
 // ================= ATTEMPT EXAM =================
 
 let currentQuestionIndex = 0;
@@ -116,69 +130,122 @@ async function initAttemptExam() {
     // ================= FULL SCREEN MODE =================
     await requestFullScreen();
 
-
-
     const params = new URLSearchParams(window.location.search);
     currentExamId = params.get("examId");
-    // ================= SOCKET MONITORING =================
-
-    const socket = io("http://localhost:5000");
-
-    // After examId is set (IMPORTANT)
-    socket.emit("join-exam", {
-        userId: student.id,
-        examId: currentExamId
-    });
-
-    // Tab switch
-    document.addEventListener("visibilitychange", () => {
-        if (document.hidden) {
-            socket.emit("monitoring-event", {
-                userId: student.id,
-                examId: currentExamId,
-                type: "TAB_SWITCH"
-            });
-        }
-    });
-
-    // Window blur
-    window.addEventListener("blur", () => {
-        socket.emit("monitoring-event", {
-            userId: student.id,
-            examId: currentExamId,
-            type: "WINDOW_BLUR"
-        });
-    });
-
-    // Fullscreen exit
-    document.addEventListener("fullscreenchange", () => {
-        if (!document.fullscreenElement) {
-            socket.emit("monitoring-event", {
-                userId: student.id,
-                examId: currentExamId,
-                type: "FULLSCREEN_EXIT"
-            });
-
-            setTimeout(() => {
-                requestFullScreen();
-            }, 1000);
-        }
-    });
 
     if (!currentExamId) {
         alert("Invalid exam ID");
-        window.location.href = "viewexams.html";
+        window.location.href = "studentdashboard.html";
         return;
     }
 
+    // ================= LOAD EXAM DATA FIRST =================
     const exams = await getPublishedExams();
     currentExam = exams.find(e => e._id === currentExamId);
 
     if (!currentExam) {
         alert("Exam not found");
-        window.location.href = "viewexams.html";
+        window.location.href = "studentdashboard.html";
         return;
     }
+
+    // ================= NOW EMIT WITH CORRECT DATA =================
+    const socket = io("http://localhost:5000");
+
+    socket.emit("join-exam", {
+        userId: student.id,
+        userName: student.name || "Student",
+        examId: currentExamId,
+        examName: currentExam.title || "Unknown Exam",
+        os: navigator.platform || "Unknown",
+        browser: getBrowserName()
+    });
+
+    // ================= KEYBOARD EVENT DETECTION =================
+    document.addEventListener("keydown", (e) => {
+      // Detect Ctrl + C (copy)
+      if (e.ctrlKey && e.key.toLowerCase() === "c") {
+        e.preventDefault();
+        socket.emit("suspiciousActivity", {
+          type: "COPY_ATTEMPT"
+        });
+        alert("⚠️ Copying is not allowed during exam!");
+        return false;
+      }
+
+      // Detect Ctrl + V (paste)
+      if (e.ctrlKey && e.key.toLowerCase() === "v") {
+        e.preventDefault();
+        socket.emit("suspiciousActivity", {
+          type: "PASTE_ATTEMPT"
+        });
+        alert("⚠️ Pasting is not allowed during exam!");
+        return false;
+      }
+
+      // Detect Ctrl + U (view source)
+      if (e.ctrlKey && e.key.toLowerCase() === "u") {
+        e.preventDefault();
+        socket.emit("suspiciousActivity", {
+          type: "VIEW_SOURCE"
+        });
+        alert("⚠️ Viewing source code is not allowed!");
+        return false;
+      }
+
+      // Detect Ctrl + Shift + I (developer tools)
+      if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "i") {
+        e.preventDefault();
+        socket.emit("suspiciousActivity", {
+          type: "DEV_TOOLS_OPEN"
+        });
+        alert("⚠️ Developer tools are not allowed!");
+        return false;
+      }
+    });
+
+    // Prevent right-click (context menu)
+    document.addEventListener("contextmenu", (e) => {
+      e.preventDefault();
+      socket.emit("suspiciousActivity", {
+        type: "RIGHT_CLICK"
+      });
+      alert("⚠️ Right-click is not allowed during exam!");
+      return false;
+    });
+
+    // Tab switch
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) {
+        socket.emit("monitoring-event", {
+          userId: student.id,
+          examId: currentExamId,
+          type: "TAB_SWITCH"
+        });
+      }
+    });
+
+    // Window blur
+    window.addEventListener("blur", () => {
+      socket.emit("monitoring-event", {
+        userId: student.id,
+        examId: currentExamId,
+        type: "WINDOW_BLUR"
+      });
+    });
+
+    // Fullscreen exit
+    document.addEventListener("fullscreenchange", () => {
+      if (!document.fullscreenElement) {
+        socket.emit("suspiciousActivity", {
+          type: "EXIT_FULLSCREEN"
+        });
+
+        setTimeout(() => {
+          requestFullScreen();
+        }, 1000);
+      }
+    });
 
     // Reset state
     currentQuestionIndex = 0;

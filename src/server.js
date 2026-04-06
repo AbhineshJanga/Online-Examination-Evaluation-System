@@ -56,44 +56,150 @@ const io = new Server(server, {
   }
 });
 
+// 🔥 GLOBAL STORAGE - Active exam sessions (real-time in memory)
+const activeSessions = {};
+
 // Store active users
 const activeUsers = {};
+
+// 📌 Make activeSessions globally accessible
+app.locals.activeSessions = activeSessions;
 
 io.on("connection", (socket) => {
   console.log("✅ User connected:", socket.id);
 
-  // 🔵 Student joins exam
-  socket.on("join-exam", ({ userId, examId }) => {
+  // 🔵 Student joins exam - Store detailed monitoring data
+  socket.on("join-exam", ({ userId, userName, examId, examName, os, browser }) => {
     if (!userId || !examId) return;
 
+    // Get IP address from socket handshake, beautify IPv6 localhost
+    let ip = socket.handshake.address;
+    if (ip === "::1") ip = "127.0.0.1"; // Convert IPv6 localhost to IPv4 for display
+
+    // Store in activeSessions for real-time monitoring
+    activeSessions[socket.id] = {
+      socketId: socket.id,
+      studentId: userId,
+      studentName: userName || "Unknown",
+      examId,
+      examName: examName || "Unknown Exam",
+      os: os || "Unknown",
+      browser: browser || "Unknown",
+      ip: ip,
+      tabSwitch: 0,
+      keysFlag: false,
+      fullscreen: true,
+      risk: "Low",
+      joinedAt: new Date().toISOString(),
+      violations: []
+    };
+
+    // Store in activeUsers for compatibility
     activeUsers[userId] = {
       socketId: socket.id,
       examId,
       violations: 0
     };
 
-    console.log(`🟢 User ${userId} joined exam ${examId}`);
+    console.log(`🟢 User ${userName} (${userId}) joined exam ${examName}`);
+  });
+
+  // 🚨 General suspicious activity handler (keyboard, fullscreen, etc.)
+  socket.on("suspiciousActivity", (data) => {
+    if (!data || !data.type) return;
+
+    const session = activeSessions[socket.id];
+    if (!session) return;
+
+    const { type } = data;
+
+    console.log(`🚨 ${type} detected from ${session.studentName}`);
+
+    // Handle different suspicious activity types
+    if (type === "COPY_ATTEMPT" || type === "PASTE_ATTEMPT" || type === "VIEW_SOURCE") {
+      session.keysFlag = true;
+      session.violations.push({
+        type: type.replace(/_/g, " "),
+        time: new Date().toISOString()
+      });
+      session.risk = "High";
+    } else if (type === "EXIT_FULLSCREEN") {
+      session.fullscreen = false;
+      session.violations.push({
+        type: "Exited fullscreen mode",
+        time: new Date().toISOString()
+      });
+      session.risk = "High";
+    }
+
+    // Emit alert to admin
+    io.emit("cheating-alert", {
+      socketId: socket.id,
+      userId: session.studentId,
+      examId: session.examId,
+      type: type.replace(/_/g, " "),
+      studentName: session.studentName,
+      violations: session.violations.length,
+      time: new Date().toISOString()
+    });
   });
 
   // 🚨 Monitoring event (tab switch, blur, fullscreen exit)
   socket.on("monitoring-event", (data) => {
-    if (!data || !data.userId || !data.examId) return;
+    if (!data || !data.examId) return;
 
-    const { userId, examId, type } = data;
+    const { examId, type } = data;
+    const session = activeSessions[socket.id];
 
-    console.log(`🚨 ${type} detected from ${userId}`);
+    if (!session) return;
 
-    // Increase violation count
-    if (activeUsers[userId]) {
-      activeUsers[userId].violations++;
+    console.log(`🚨 ${type} detected from ${session.studentName}`);
+
+    // Update session based on event type
+    if (type === "TAB_SWITCH") {
+      session.tabSwitch += 1;
+      session.violations.push({
+        type: "Tab switched to another window",
+        time: new Date().toISOString()
+      });
+    } else if (type === "WINDOW_BLUR") {
+      session.violations.push({
+        type: "Window focus lost",
+        time: new Date().toISOString()
+      });
+    } else if (type === "FULLSCREEN_EXIT") {
+      session.fullscreen = false;
+      session.violations.push({
+        type: "Exited fullscreen mode",
+        time: new Date().toISOString()
+      });
+    } else if (type === "SUSPICIOUS_KEYS") {
+      session.keysFlag = true;
+      session.violations.push({
+        type: "Suspicious key combination detected",
+        time: new Date().toISOString()
+      });
     }
 
-    // Emit alert to teacher/admin
+    // Calculate risk level
+    if (session.tabSwitch > 2 || session.keysFlag) {
+      session.risk = "High";
+    } else if (session.tabSwitch > 0) {
+      session.risk = "Medium";
+    }
+
+    // Increase violation count in activeUsers
+    if (activeUsers[session.studentId]) {
+      activeUsers[session.studentId].violations++;
+    }
+
+    // Emit alert to teacher/admin (real-time)
     io.emit("cheating-alert", {
-      userId,
+      userId: session.studentId,
       examId,
       type,
-      violations: activeUsers[userId]?.violations || 0,
+      studentName: session.studentName,
+      violations: activeUsers[session.studentId]?.violations || 0,
       time: new Date().toISOString()
     });
   });
@@ -102,10 +208,22 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     console.log("❌ User disconnected:", socket.id);
 
-    for (let userId in activeUsers) {
-      if (activeUsers[userId].socketId === socket.id) {
-        delete activeUsers[userId];
-        break;
+    // Remove from activeSessions
+    if (activeSessions[socket.id]) {
+      const studentId = activeSessions[socket.id].studentId;
+      delete activeSessions[socket.id];
+      
+      // Also remove from activeUsers
+      if (activeUsers[studentId]) {
+        delete activeUsers[studentId];
+      }
+    } else {
+      // Fallback: search in activeUsers
+      for (let userId in activeUsers) {
+        if (activeUsers[userId].socketId === socket.id) {
+          delete activeUsers[userId];
+          break;
+        }
       }
     }
   });

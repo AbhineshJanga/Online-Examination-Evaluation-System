@@ -6,10 +6,28 @@ const {
   deleteUser,
   getAllExams,
   deleteExam,
+  getAdminStats,
+  getRecentActivity,
+  getMonitoringSessions,
+  getSessionById,
+  getResultsSummary,
 } = require("../controllers/adminController");
 
 const verifyToken = require("../middleware/authMiddleware");
 const authorizeRoles = require("../middleware/roleMiddleware");
+
+// Admin Stats
+router.get("/stats", verifyToken, authorizeRoles("admin"), getAdminStats);
+
+// Activity
+router.get("/activity", verifyToken, authorizeRoles("admin"), getRecentActivity);
+
+// Monitoring Sessions (Real-time)
+router.get("/monitoring/sessions", verifyToken, authorizeRoles("admin"), getMonitoringSessions);
+router.get("/monitoring/:id", verifyToken, authorizeRoles("admin"), getSessionById);
+
+// Results
+router.get("/results", verifyToken, authorizeRoles("admin"), getResultsSummary);
 
 // Users
 router.get("/users", verifyToken, authorizeRoles("admin"), getAllUsers);

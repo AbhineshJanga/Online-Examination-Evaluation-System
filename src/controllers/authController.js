@@ -1,6 +1,7 @@
 // controllers/authController.js
 
 const User = require("../models/User");
+const ActivityLog = require("../models/ActivityLog");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
@@ -106,6 +107,12 @@ exports.loginUser = async (req, res) => {
             process.env.JWT_SECRET,
             { expiresIn: "1d" }
         );
+
+        // ✅ LOG ACTIVITY
+        await ActivityLog.create({
+            userId: user._id,
+            action: "Logged in"
+        });
 
         res.status(200).json({
             success: true,

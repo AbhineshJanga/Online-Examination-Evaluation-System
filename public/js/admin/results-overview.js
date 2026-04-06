@@ -1,11 +1,4 @@
 ﻿/* =========================
-   IMPORT DATA
-========================= */
-
-import { results } from "./admin-data.js";
-
-
-/* =========================
    DOM
 ========================= */
 
@@ -21,26 +14,32 @@ const tableBody = document.getElementById("resultsTableBody");
    SUMMARY CALCULATION
 ========================= */
 
-function renderSummary() {
+async function renderSummary() {
+    try {
+        const token = localStorage.getItem("token");
+        const response = await fetch('/api/admin/results', {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
 
-    let totalAppeared = 0;
-    let totalPassed = 0;
-    let totalFailed = 0;
+        if (!response.ok) throw new Error('Failed to fetch results');
 
-    results.forEach(r => {
-        totalAppeared += r.appeared;
-        totalPassed += r.passed;
-        totalFailed += r.failed;
-    });
+        const data = await response.json();
+        const summary = data.summary || {};
 
-    const percent = totalAppeared
-        ? Math.round((totalPassed / totalAppeared) * 100)
-        : 0;
-
-    totalAppearedEl.textContent = totalAppeared;
-    totalPassedEl.textContent = totalPassed;
-    totalFailedEl.textContent = totalFailed;
-    passPercentEl.textContent = percent + "%";
+        totalAppearedEl.textContent = summary.totalAppeared || 0;
+        totalPassedEl.textContent = summary.totalPassed || 0;
+        totalFailedEl.textContent = summary.totalFailed || 0;
+        passPercentEl.textContent = (summary.passPercentage || 0) + "%";
+    } catch (error) {
+        console.error('Error loading results summary:', error);
+        totalAppearedEl.textContent = "--";
+        totalPassedEl.textContent = "--";
+        totalFailedEl.textContent = "--";
+        passPercentEl.textContent = "--";
+    }
 }
 
 
@@ -60,27 +59,54 @@ function getRiskClass(percent) {
    TABLE RENDER
 ========================= */
 
-function renderTable() {
+/* =========================
+   TABLE RENDER
+========================= */
 
-    tableBody.innerHTML = "";
+async function renderTable() {
+    try {
+        const token = localStorage.getItem("token");
+        const response = await fetch('/api/admin/results', {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
 
-    results.forEach(r => {
+        if (!response.ok) throw new Error('Failed to fetch results');
 
-        const percent = Math.round((r.passed / r.appeared) * 100);
-        const riskClass = getRiskClass(percent);
+        const data = await response.json();
+        const examResults = data.examResults || [];
 
-        const row = document.createElement("tr");
+        tableBody.innerHTML = "";
 
-        row.innerHTML = `
-            <td>${r.examName}</td>
-            <td>${r.appeared}</td>
-            <td>${r.passed}</td>
-            <td>${r.failed}</td>
-            <td><span class="risk ${riskClass}">${percent}%</span></td>
-        `;
+        if (examResults.length === 0) {
+            tableBody.innerHTML = `<tr><td colspan="5" style="text-align:center; color: gray;">No results available</td></tr>`;
+            return;
+        }
 
-        tableBody.appendChild(row);
-    });
+        examResults.forEach(result => {
+            const percent = result.appeared > 0 
+                ? Math.round((result.passed / result.appeared) * 100)
+                : 0;
+            const riskClass = getRiskClass(percent);
+
+            const row = document.createElement("tr");
+
+            row.innerHTML = `
+                <td>${result.examName}</td>
+                <td>${result.appeared}</td>
+                <td>${result.passed}</td>
+                <td>${result.failed}</td>
+                <td><span class="risk ${riskClass}">${percent}%</span></td>
+            `;
+
+            tableBody.appendChild(row);
+        });
+    } catch (error) {
+        console.error('Error loading results table:', error);
+        tableBody.innerHTML = `<tr><td colspan="5" style="text-align:center; color: red;">Error loading results</td></tr>`;
+    }
 }
 
 
