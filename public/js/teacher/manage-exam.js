@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     <td>${exam.title}</td>
                     <td>${exam.description || 'N/A'}</td>
                     <td>${exam.questions ? exam.questions.length : 0} questions</td>
-                    <td>${new Date(exam.createdAt).toLocaleDateString()}</td>
+                    <td>${exam.examDate ? new Date(exam.examDate).toLocaleDateString() : new Date(exam.createdAt).toLocaleDateString()}</td>
                     <td>${exam.duration} mins</td>
                     <td>
                         <span class="status ${exam.isPublished ? "graded" : "pending"}">

@@ -54,7 +54,7 @@
             <section class="stats-section">
                 <div class="stat-card">
                     <h3>Available Exams</h3>
-                    <p>0</p>
+                    <p id="availableExamsCount">0</p>
                 </div>
                 <div class="stat-card">
                     <h3>Results Pending</h3>
@@ -69,7 +69,7 @@
                     <a href="#">View All</a>
                 </div>
 
-                <div class="recent-card">
+                <div class="recent-card" id="recentExamsList">
                     <p>No exams created yet.</p>
                 </div>
             </section>
@@ -93,23 +93,11 @@
                                 <th>Action</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="recentSubmissionsBody">
                             <tr>
-                                <td>--</td>
-                                <td>--</td>
-                                <td>--</td>
-                                <td>--</td>
-                                <td><span class="status pending">Pending</span></td>
-                                <td><a href="#" class="action-btn">Evaluate</a></td>
-                            </tr>
-
-                            <tr>
-                                <td>--</td>
-                                <td>--</td>
-                                <td>--</td>
-                                <td>--</td>
-                                <td><span class="status graded">Graded</span></td>
-                                <td><a href="#" class="action-btn">View</a></td>
+                                <td colspan="6" style="text-align:center; padding: 20px; color: #666;">
+                                    Loading recent submissions...
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -139,6 +127,118 @@
                 return;
             }
 
+            async function loadAvailableExams() {
+                try {
+                    const response = await fetch(`/api/exams?isPublished=false`, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch available exams');
+                    }
+
+                    const data = await response.json();
+                    const exams = data.exams || [];
+
+                    const countEl = document.getElementById("availableExamsCount");
+                    if (countEl) {
+                        countEl.textContent = exams.length;
+                    }
+
+                    const recentExamsList = document.getElementById("recentExamsList");
+                    if (recentExamsList) {
+                        if (exams.length === 0) {
+                            recentExamsList.innerHTML = `<p>No available exams right now.</p>`;
+                        } else {
+                            recentExamsList.innerHTML = exams.slice(0, 3).map(exam => `
+                                <div class="exam-preview">
+                                    <h4>${exam.title}</h4>
+                                    <p>${exam.description || 'No description'}</p>
+                                    <span>Created: ${new Date(exam.createdAt).toLocaleDateString()}</span>
+                                </div>
+                            `).join('');
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error loading available exams:', error);
+                }
+            }
+
+            async function loadRecentSubmissions() {
+                try {
+                    const response = await fetch(`/api/exams/submissions?limit=3`, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch recent submissions');
+                    }
+
+                    const data = await response.json();
+                    const submissions = data.submissions || [];
+                    const tableBody = document.getElementById('recentSubmissionsBody');
+
+                    if (!tableBody) return;
+
+                    if (submissions.length === 0) {
+                        tableBody.innerHTML = `
+                            <tr>
+                                <td colspan="6" style="text-align:center; padding: 20px; color: #666;">
+                                    No recent submissions available.
+                                </td>
+                            </tr>
+                        `;
+                        return;
+                    }
+
+                    tableBody.innerHTML = submissions.map(submission => {
+                        const studentName = submission.student?.name || '--';
+                        const examTitle = submission.exam?.title || '--';
+                        const submittedDate = submission.submittedAt
+                            ? new Date(submission.submittedAt).toLocaleDateString()
+                            : '--';
+                        const status = submission.status || 'Submitted';
+                        const marks = status === 'Graded'
+                            ? submission.evaluatedScore ?? submission.score ?? '--'
+                            : submission.score ?? '--';
+                        const labelClass = status === 'Graded' ? 'graded' : 'pending';
+                        const actionLabel = status === 'Graded' ? 'View' : 'Evaluate';
+                        const actionLink = `evaluate-submission.html?id=${submission._id}`;
+
+                        return `
+                            <tr>
+                                <td>${studentName}</td>
+                                <td>${examTitle}</td>
+                                <td>${submittedDate}</td>
+                                <td>${marks}</td>
+                                <td><span class="status ${labelClass}">${status}</span></td>
+                                <td><a href="${actionLink}" class="action-btn">${actionLabel}</a></td>
+                            </tr>
+                        `;
+                    }).join('');
+                } catch (error) {
+                    console.error('Error loading recent submissions:', error);
+                    const tableBody = document.getElementById('recentSubmissionsBody');
+                    if (tableBody) {
+                        tableBody.innerHTML = `
+                            <tr>
+                                <td colspan="6" style="text-align:center; padding: 20px; color: red;">
+                                    Could not load recent submissions.
+                                </td>
+                            </tr>
+                        `;
+                    }
+                }
+            }
+
+            loadAvailableExams();
+            loadRecentSubmissions();
         });
 
         document.addEventListener("DOMContentLoaded", function () {

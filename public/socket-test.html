@@ -17,7 +17,7 @@
         const eventsDiv = document.getElementById('events');
 
         try {
-            const socket = io('http://localhost:5000');
+            const socket = io();
 
             socket.on('connect', () => {
                 statusDiv.innerHTML = '✅ <strong>Connected to Socket.IO server</strong>';

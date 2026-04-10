@@ -153,7 +153,13 @@ async function initExamSubmitted() {
         const totalQuestions = latestResult.totalQuestions || (latestResult.exam?.questions?.length || 0);
 
         if (examNameEl) examNameEl.textContent = examTitle;
-        if (timeTakenEl) timeTakenEl.textContent = "N/A";
+        if (timeTakenEl) {
+            if (localSummary && localSummary.examId === latestResult.exam?._id) {
+                timeTakenEl.textContent = localSummary.timeTaken || "N/A";
+            } else {
+                timeTakenEl.textContent = latestResult.timeTaken || "N/A";
+            }
+        }
         if (attemptedEl) attemptedEl.textContent = `${answerCount} / ${totalQuestions}`;
         if (statusEl) statusEl.textContent = latestResult.status || "Not Published";
 

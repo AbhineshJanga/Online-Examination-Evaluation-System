@@ -43,6 +43,11 @@ const resultSchema = new mongoose.Schema({
         default: null
     },
 
+    timeTaken: {
+        type: String,
+        default: null
+    },
+
     gradedAt: {
         type: Date,
         default: null

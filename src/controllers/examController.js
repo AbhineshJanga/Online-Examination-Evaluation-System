@@ -6,12 +6,12 @@ const Result = require("../models/Result");
 // ================= CREATE EXAM =================
 exports.createExam = async (req, res) => {
     try {
-        const { title, description, questions, duration } = req.body;
+        const { title, description, questions, duration, examDate } = req.body;
 
-        if (!title || !questions || !duration) {
+        if (!title || !questions || !duration || !examDate) {
             return res.status(400).json({
                 success: false,
-                message: "Title, questions, and duration are required"
+                message: "Title, questions, duration, and exam date are required"
             });
         }
 
@@ -20,6 +20,7 @@ exports.createExam = async (req, res) => {
             description,
             questions,
             duration,
+            examDate,
             createdBy: req.user.id
         });
 
@@ -43,14 +44,20 @@ exports.createExam = async (req, res) => {
 exports.getAllExams = async (req, res) => {
     try {
         const userRole = req.user.role;
+        const { isPublished } = req.query;
 
         let query = {};
 
-        // Students can only see published exams
+        // Students can only see published exams that are scheduled for today or later
         if (userRole === 'student') {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
             query.isPublished = true;
+            query.examDate = { $gte: today };
+        } else if (isPublished !== undefined) {
+            query.isPublished = isPublished === "true";
         }
-        // Teachers and admins can see all exams (both published and drafts)
+        // Teachers and admins can see all exams by default, or filter by publish status when requested
 
         const exams = await Exam.find(query).populate("createdBy", "name email");
 
@@ -109,7 +116,7 @@ exports.getExamById = async (req, res) => {
 exports.updateExam = async (req, res) => {
     try {
         const { examId } = req.params;
-        const { title, description, questions, duration } = req.body;
+        const { title, description, questions, duration, examDate } = req.body;
         const userId = req.user.id;
 
         const exam = await Exam.findOne({
@@ -137,6 +144,7 @@ exports.updateExam = async (req, res) => {
         if (description !== undefined) exam.description = description;
         if (questions) exam.questions = questions;
         if (duration) exam.duration = duration;
+        if (examDate) exam.examDate = examDate;
 
         await exam.save();
 
@@ -282,6 +290,18 @@ exports.submitExam = async (req, res) => {
             });
         }
 
+        // Check schedule date
+        if (exam.examDate) {
+            const examTime = new Date(exam.examDate).setHours(0, 0, 0, 0);
+            const today = new Date().setHours(0, 0, 0, 0);
+            if (examTime > today) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Exam is not yet available"
+                });
+            }
+        }
+
         let score = 0;
 
         exam.questions.forEach((q, index) => {
@@ -301,6 +321,7 @@ exports.submitExam = async (req, res) => {
             score,
             totalQuestions: exam.questions.length,
             status: "Graded",
+            timeTaken: req.body.timeTaken || null,
             submittedAt: Date.now(),
             gradedAt: Date.now()
         });

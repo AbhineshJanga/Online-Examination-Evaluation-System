@@ -2,7 +2,7 @@
 
 // Prevent multiple connections
 if (!window.socket) {
-    window.socket = io("http://localhost:5000");
+    window.socket = io();
 
     window.socket.on("connect", () => {
         console.log("🟢 Global Socket Connected:", window.socket.id);

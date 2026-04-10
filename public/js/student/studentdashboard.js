@@ -112,8 +112,8 @@ async function updateStats() {
 
     const availableExams = getUpcomingExams(exams);
     const avgScore = calculateAverageScore(results);
-    const passed = results.filter(r => r.score >= 40).length;
-    const failed = results.filter(r => r.score < 40).length;
+    const passed = results.filter(r => getResultPercentage(r) >= 40).length;
+    const failed = results.filter(r => getResultPercentage(r) < 40).length;
 
     const statCards = document.querySelectorAll(".stat-card p");
     if (statCards.length >= 2) {
@@ -153,19 +153,32 @@ function getUpcomingExams(exams) {
     today.setHours(0, 0, 0, 0); // remove time
 
     return exams.filter(exam => {
-        if (!exam.createdAt) return false;
-        const examDate = new Date(exam.createdAt);
+        if (!exam.examDate) return false;
+        const examDate = new Date(exam.examDate);
         examDate.setHours(0, 0, 0, 0); // remove time
 
         return examDate >= today;
     });
 }
 
+function getResultPercentage(result) {
+    const totalQuestions = Number(result.totalQuestions || 0);
+    if (totalQuestions > 0) {
+        return Math.round((result.score / totalQuestions) * 100);
+    }
+
+    if (typeof result.score === 'number') {
+        return result.score;
+    }
+
+    return 0;
+}
+
 function calculateAverageScore(results) {
     if (results.length === 0) return 0;
 
-    const total = results.reduce((sum, result) => sum + result.score, 0);
-    return Math.round(total / results.length);
+    const totalPercentage = results.reduce((sum, result) => sum + getResultPercentage(result), 0);
+    return Math.round(totalPercentage / results.length);
 }
 
 async function loadUpcomingExams() {
@@ -349,7 +362,7 @@ async function loadExamDetails() {
     const examDescription = document.querySelector(".exam-description");
 
     if (examTitle) examTitle.textContent = exam.title;
-    if (examDate) examDate.textContent = new Date(exam.createdAt).toLocaleDateString();
+    if (examDate) examDate.textContent = exam.examDate ? new Date(exam.examDate).toLocaleDateString() : new Date(exam.createdAt).toLocaleDateString();
     if (examTime) examTime.textContent = `${exam.duration} minutes`;
     if (examQuestions) examQuestions.textContent = exam.questions ? exam.questions.length : 0;
     if (examType) examType.textContent = "MCQ";
@@ -361,20 +374,37 @@ async function loadExamDetails() {
     if (attemptBtn) {
         attemptBtn.href = `attempt-exam.html?examId=${exam._id}`;
 
-        // Check if student has already attempted this exam
-        try {
-            const results = await getStudentResults();
-            const alreadyAttempted = results.find(r => r.exam._id === exam._id);
+        let isFutureExam = false;
 
-            if (alreadyAttempted) {
+        if (exam.examDate) {
+            const examTime = new Date(exam.examDate).setHours(0, 0, 0, 0);
+            const today = new Date().setHours(0, 0, 0, 0);
+            if (examTime > today) {
+                isFutureExam = true;
                 attemptBtn.disabled = true;
-                attemptBtn.textContent = "Already Attempted";
+                attemptBtn.textContent = "Available on " + new Date(exam.examDate).toLocaleDateString();
                 attemptBtn.style.backgroundColor = "#ccc";
                 attemptBtn.style.cursor = "not-allowed";
                 attemptBtn.href = "#";
             }
-        } catch (error) {
-            console.error("Error checking attempt status:", error);
+        }
+
+        // Only check attempt status for exams that are already available
+        if (!isFutureExam) {
+            try {
+                const results = await getStudentResults();
+                const alreadyAttempted = results.some(r => String(r.exam?._id || r.exam) === String(exam._id));
+
+                if (alreadyAttempted) {
+                    attemptBtn.disabled = true;
+                    attemptBtn.textContent = "Already Attempted";
+                    attemptBtn.style.backgroundColor = "#ccc";
+                    attemptBtn.style.cursor = "not-allowed";
+                    attemptBtn.href = "#";
+                }
+            } catch (error) {
+                console.error("Error checking attempt status:", error);
+            }
         }
     }
 

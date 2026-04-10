@@ -150,7 +150,7 @@ async function initAttemptExam() {
     }
 
     // ================= NOW EMIT WITH CORRECT DATA =================
-    const socket = io("http://localhost:5000");
+    const socket = io();
 
     socket.emit("join-exam", {
         userId: student.id,
@@ -443,7 +443,8 @@ async function submitExamToAPI() {
 
     const payload = {
         examId: currentExamId,
-        answers: answers
+        answers: answers,
+        timeTaken: getTimeTaken()
     };
 
     const response = await apiCall("/exams/submit", "POST", payload);

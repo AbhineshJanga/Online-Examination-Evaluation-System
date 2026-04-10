@@ -170,8 +170,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const payload = {
             title: subject,
-            description: `${instructions} | Course: ${courseId} | Format: ${format} | Date: ${date}`,
+            description: `${instructions} | Course: ${courseId} | Format: ${format}`,
             duration: Number(duration),
+            examDate: date,
             questions
         };
 

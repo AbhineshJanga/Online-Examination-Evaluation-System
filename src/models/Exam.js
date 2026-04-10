@@ -39,6 +39,11 @@ const examSchema = new mongoose.Schema({
         required: true
     },
 
+    examDate: {
+        type: Date,
+        required: true
+    },
+
     isPublished: {
         type: Boolean,
         default: false

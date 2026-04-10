@@ -125,9 +125,10 @@ form.addEventListener("submit", async (e) => {
     const title = form.querySelector("input[name='title']").value.trim();
     const description = form.querySelector("textarea[name='description']").value.trim();
     const duration = Number(form.querySelector("input[name='duration']").value);
+    const examDate = form.querySelector("input[name='examDate']").value;
 
-    if (!title || !duration || duration <= 0) {
-        alert("Title and duration are required.");
+    if (!title || !duration || duration <= 0 || !examDate) {
+        alert("Title, duration, and exam date are required.");
         return;
     }
 
@@ -141,7 +142,7 @@ form.addEventListener("submit", async (e) => {
         const response = await fetch(`${API_BASE}/api/exams/${examId}`, {
             method: "PUT",
             headers: getAuthHeaders(),
-            body: JSON.stringify({ title, description, duration, questions })
+            body: JSON.stringify({ title, description, duration, examDate, questions })
         });
 
         const data = await response.json();
@@ -185,9 +186,18 @@ form.addEventListener("submit", async (e) => {
             durationInput = durationField.querySelector("input");
         }
 
+        let examDateInput = form.querySelector("input[name='examDate']");
+        if (!examDateInput) {
+            const examDateField = document.createElement("div");
+            examDateField.innerHTML = `<div class="form-group"><label>Exam Date</label><input type="date" name="examDate" required /></div>`;
+            form.insertBefore(examDateField, form.querySelector(".form-grid"));
+            examDateInput = examDateField.querySelector("input");
+        }
+
         titleInput.value = exam.title || "";
         descriptionTextarea.value = exam.description || "";
         durationInput.value = exam.duration || 0;
+        examDateInput.value = exam.examDate ? new Date(exam.examDate).toISOString().split('T')[0] : "";
 
         populateForm(exam);
     }
